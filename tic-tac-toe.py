@@ -8,7 +8,6 @@ class playerIcons(Enum):
 	X_ICON		= 1
 	O_ICON		= 2
 
-# This is a test edit
 ##########################################################################################
 # functions
 
