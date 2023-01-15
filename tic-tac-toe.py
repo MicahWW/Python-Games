@@ -3,20 +3,19 @@ import sys
 import random
 from datetime import datetime
 
-class playerIcons(Enum):
-	BLANK_ICON	= 0
-	X_ICON		= 1
-	O_ICON		= 2
+class playerValues(Enum):
+	BLANK_POS		= 0
+	X_PLAYER		= 1
+	O_PLAYER		= 2
 
-# This is a test edit
 ##########################################################################################
 # functions
 
 def emptyBoard():
 	return [
-		[playerIcons.BLANK_ICON.value, playerIcons.BLANK_ICON.value, playerIcons.BLANK_ICON.value],
-		[playerIcons.BLANK_ICON.value, playerIcons.BLANK_ICON.value, playerIcons.BLANK_ICON.value],
-		[playerIcons.BLANK_ICON.value, playerIcons.BLANK_ICON.value, playerIcons.BLANK_ICON.value]
+		[playerValues.BLANK_POS.value, playerValues.BLANK_POS.value, playerValues.BLANK_POS.value],
+		[playerValues.BLANK_POS.value, playerValues.BLANK_POS.value, playerValues.BLANK_POS.value],
+		[playerValues.BLANK_POS.value, playerValues.BLANK_POS.value, playerValues.BLANK_POS.value]
 		]
 
 def displayBoard(board):
@@ -25,11 +24,11 @@ def displayBoard(board):
 		result += str(idx_row) + '   '
 		for idx_col, val in enumerate(row):
 			result += ' '
-			if val == playerIcons.BLANK_ICON.value:
+			if val == playerValues.BLANK_POS.value:
 				result += ' '
-			elif val == playerIcons.X_ICON.value:
+			elif val == playerValues.X_PLAYER.value:
 				result += 'X'
-			elif val == playerIcons.O_ICON.value:
+			elif val == playerValues.O_PLAYER.value:
 				result += 'O'
 			else:
 				# TODO: how to error handel
@@ -73,7 +72,7 @@ def promptUser():
 		print ('Invalid answer')
 
 def checkValidMove(row, col, board):
-	return board[row][col] == playerIcons.BLANK_ICON.value
+	return board[row][col] == playerValues.BLANK_POS.value
 
 def userMove(board):
 	validMove = False
@@ -87,7 +86,7 @@ def userMove(board):
 	return row, col
 
 def updateBoard(row, col, board, playerIcon):
-	if isinstance(playerIcon, playerIcons):
+	if isinstance(playerIcon, playerValues):
 		board[row][col] = playerIcon.value
 	else:
 		# TODO: how to error handel
@@ -122,9 +121,9 @@ def playTikTacToe():
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 		displayBoard(board)
 		row, col = userMove(board)
-		updateBoard(row, col, board, playerIcons.X_ICON)
+		updateBoard(row, col, board, playerValues.X_PLAYER)
 		row, col = botMove(board)
-		updateBoard(row, col, board, playerIcons.O_ICON)
+		updateBoard(row, col, board, playerValues.O_PLAYER)
 
 
 
