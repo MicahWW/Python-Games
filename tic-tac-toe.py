@@ -103,7 +103,7 @@ def updateBoard(row, col, board, player_icon):
 
 def botMove(board):
 	valid_move = False
-	row, col = '', ''
+	row, col = 0, 0
 
 	while not valid_move:
 		row = random.choice([0, 1, 2])
