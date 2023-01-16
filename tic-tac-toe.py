@@ -132,14 +132,6 @@ def playTikTacToe():
 		displayBoard(board)
 		row, col = userMove(board)
 		updateBoard(row, col, board, PlayerValues.X_PLAYER)
-
-		# Keep track of player moves.  If user moves first, they will move 5 times, after which the game ends.
-		# TODO: if bot moves first, this will need to accommodate 5 bot moves / 4 player moves.  Figure out how this will work.
-		# Maybe TODO: do we want this feature to be it's own function?  Does it work better inside this function?
-		user_moves += 1
-		if user_moves == 5:
-			displayBoard(board)
-			break
 		row, col = botMove(board)
 		updateBoard(row, col, board, PlayerValues.O_PLAYER)
 
