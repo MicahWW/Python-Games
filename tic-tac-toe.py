@@ -125,7 +125,6 @@ def playTikTacToe():
 	print('EX: A1 or 3B')
 
 	board = emptyBoard()
-	user_moves = 0
 
 	while True:
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
