@@ -3,7 +3,6 @@ import sys
 import random
 from datetime import datetime
 
-
 class PlayerValues(Enum):
 	BLANK_POS		= 0
 	X_PLAYER		= 1
@@ -18,6 +17,7 @@ def emptyBoard():
 		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value],
 		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value],
 		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value]
+
 		]
 
 
@@ -32,6 +32,7 @@ def displayBoard(board):
 			elif val == PlayerValues.X_PLAYER.value:
 				result += 'X'
 			elif val == PlayerValues.O_PLAYER.value:
+
 				result += 'O'
 			else:
 				# TODO: how to error handel
@@ -93,9 +94,11 @@ def userMove(board):
 	return row, col
 
 
+
 def updateBoard(row, col, board, player_icon):
 	if isinstance(player_icon, PlayerValues):
 		board[row][col] = player_icon.value
+
 	else:
 		# TODO: how to error handel
 		sys.exit()
@@ -133,6 +136,7 @@ def playTikTacToe():
 		updateBoard(row, col, board, PlayerValues.X_PLAYER)
 		row, col = botMove(board)
 		updateBoard(row, col, board, PlayerValues.O_PLAYER)
+
 
 
 if __name__ == "__main__":
