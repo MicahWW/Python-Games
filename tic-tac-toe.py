@@ -8,6 +8,12 @@ class PlayerValues(Enum):
 	X_PLAYER		= 1
 	O_PLAYER		= 2
 
+class GameStates(Enum):
+	NO_WINNER		= 0
+	X_WINNER		= 1
+	O_WINNER		= 2
+	DRAW_GAME		= 3
+
 ##########################################################################################
 # functions
 
@@ -116,12 +122,53 @@ def botMove(board):
 	return row, col
 
 
+def checkBoard(board):
+	# check for win in rows
+	for row in range(0, 3):
+		if board[row][0] == board[row][1] == board[row][2] == PlayerValues.X_PLAYER.value:
+			return GameStates.X_WINNER
+		elif board[row][0] == board[row][1] == board[row][2] == PlayerValues.O_PLAYER.value:
+			return GameStates.O_WINNER
+
+	# check for win in columns
+	for col in range(0, 3):
+		if board[0][col] == board[1][col] == board[2][col] == PlayerValues.X_PLAYER.value:
+			return GameStates.X_WINNER
+		elif board[0][col] == board[1][col] == board[2][col] == PlayerValues.O_PLAYER.value:
+			return GameStates.O_WINNER
+
+	# check for win in diagonals
+	if board[0][0] == board[1][1] == board[2][2] == PlayerValues.X_PLAYER.value:
+			return GameStates.X_WINNER
+	if board[2][0] == board[1][1] == board[0][2] == PlayerValues.X_PLAYER.value:
+			return GameStates.X_WINNER
+	if board[0][0] == board[1][1] == board[2][2] == PlayerValues.O_PLAYER.value:
+			return GameStates.O_WINNER
+	if board[2][0] == board[1][1] == board[0][2] == PlayerValues.O_PLAYER.value:
+			return GameStates.O_WINNER
+
+	# check if the board is full
+	for row in board:
+		for col in row:
+			if col == PlayerValues.BLANK_POS.value:
+				return GameStates.NO_WINNER
+
+	return GameStates.DRAW_GAME
+
+def displayResult(game_state):
+	if game_state == GameStates.O_WINNER:
+		print('O won the game!')
+	elif game_state == GameStates.X_WINNER:
+		print('X won the game!')
+	else:
+		print('The game ended in a draw')
+
 # functions
 ##########################################################################################
 # run the game
 def playTikTacToe():
 	random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
-	# print ('The Xs play first') # TODO: make the Xs play first
+	# print('The Xs play first') # TODO: make the Xs play first
 	# user = input('Do you want to be Xs or Os? ')
 	# user = user.lower()
 	print('When making a choice use 1, 2, or 3 for a row and A, B, or C for a column')
@@ -129,14 +176,26 @@ def playTikTacToe():
 	print('EX: A1 or 3B')
 
 	board = emptyBoard()
+	displayBoard(board)
 
 
 	while True:
-		displayBoard(board)
 		row, col = userMove(board)
 		updateBoard(row, col, board, PlayerValues.X_PLAYER)
+		displayBoard(board)
+		game_state = checkBoard(board)
+		if game_state != GameStates.NO_WINNER:
+			displayResult(game_state)
+			break
+
+		print ('Processing bot\'s move')
 		row, col = botMove(board)
 		updateBoard(row, col, board, PlayerValues.O_PLAYER)
+		displayBoard(board)
+		game_state = checkBoard(board)
+		if game_state != GameStates.NO_WINNER:
+			displayResult(game_state)
+			break
 
 
 
