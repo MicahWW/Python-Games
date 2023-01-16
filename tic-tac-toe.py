@@ -120,6 +120,7 @@ def botMove(board):
 ##########################################################################################
 # run the game
 def playTikTacToe():
+	random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 	# print ('The Xs play first') # TODO: make the Xs play first
 	# user = input('Do you want to be Xs or Os? ')
 	# user = user.lower()
@@ -129,8 +130,8 @@ def playTikTacToe():
 
 	board = emptyBoard()
 
+
 	while True:
-		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 		displayBoard(board)
 		row, col = userMove(board)
 		updateBoard(row, col, board, PlayerValues.X_PLAYER)
