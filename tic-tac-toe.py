@@ -3,7 +3,7 @@ import sys
 import random
 from datetime import datetime
 
-class playerValues(Enum):
+class PlayerValues(Enum):
 	BLANK_POS		= 0
 	X_PLAYER		= 1
 	O_PLAYER		= 2
@@ -11,12 +11,15 @@ class playerValues(Enum):
 ##########################################################################################
 # functions
 
+
 def emptyBoard():
 	return [
-		[playerValues.BLANK_POS.value, playerValues.BLANK_POS.value, playerValues.BLANK_POS.value],
-		[playerValues.BLANK_POS.value, playerValues.BLANK_POS.value, playerValues.BLANK_POS.value],
-		[playerValues.BLANK_POS.value, playerValues.BLANK_POS.value, playerValues.BLANK_POS.value]
+		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value],
+		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value],
+		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value]
+
 		]
+
 
 def displayBoard(board):
 	result = '     A | B | C \n\n'
@@ -24,11 +27,12 @@ def displayBoard(board):
 		result += str(idx_row) + '   '
 		for idx_col, val in enumerate(row):
 			result += ' '
-			if val == playerValues.BLANK_POS.value:
+			if val == PlayerValues.BLANK_POS.value:
 				result += ' '
-			elif val == playerValues.X_PLAYER.value:
+			elif val == PlayerValues.X_PLAYER.value:
 				result += 'X'
-			elif val == playerValues.O_PLAYER.value:
+			elif val == PlayerValues.O_PLAYER.value:
+
 				result += 'O'
 			else:
 				# TODO: how to error handel
@@ -37,7 +41,8 @@ def displayBoard(board):
 				result += ' ║'
 		if idx_row < 2:
 			result += '\n    ═══╬═══╬═══\n'
-	print (result)
+	print(result)
+
 
 def promptUser():
 	while True:
@@ -69,36 +74,44 @@ def promptUser():
 				row = int(row)
 				return row, col
 
-		print ('Invalid answer')
+		print('Invalid answer')
+
 
 def checkValidMove(row, col, board):
-	return board[row][col] == playerValues.BLANK_POS.value
+	return board[row][col] == PlayerValues.BLANK_POS.value
+
 
 def userMove(board):
-	validMove = False
+	valid_move = False
+	row, col = '', ''
 
-	while not validMove:
+	while not valid_move:
 		row, col = promptUser()
-		validMove = checkValidMove(row, col, board)
-		if not validMove:
-			print ('That space is already taken')
+		valid_move = checkValidMove(row, col, board)
+		if not valid_move:
+			print('That space is already taken')
 
 	return row, col
 
-def updateBoard(row, col, board, playerIcon):
-	if isinstance(playerIcon, playerValues):
-		board[row][col] = playerIcon.value
+
+
+def updateBoard(row, col, board, player_icon):
+	if isinstance(player_icon, PlayerValues):
+		board[row][col] = player_icon.value
+
 	else:
 		# TODO: how to error handel
 		sys.exit()
 
-def botMove(board):
-	validMove = False
 
-	while not validMove:
+def botMove(board):
+	valid_move = False
+	row, col = 0, 0
+
+	while not valid_move:
 		row = random.choice([0, 1, 2])
 		col = random.choice([0, 1, 2])
-		validMove = checkValidMove(row, col, board)
+		valid_move = checkValidMove(row, col, board)
 
 	return row, col
 
@@ -107,23 +120,22 @@ def botMove(board):
 ##########################################################################################
 # run the game
 def playTikTacToe():
-	#print ('The Xs play first') # TODO: make the Xs play first
-	#user = input('Do you want to be Xs or Os? ')
-	#user = user.lower()
-	print ('When making a choice use 1, 2, or 3 for a row and A, B, or C for a column')
-	print ('When entering your choice it must only have one row selection and one column selection with nothing else.')
-	print ('EX: A1 or 3B')
+	# print ('The Xs play first') # TODO: make the Xs play first
+	# user = input('Do you want to be Xs or Os? ')
+	# user = user.lower()
+	print('When making a choice use 1, 2, or 3 for a row and A, B, or C for a column')
+	print('When entering your choice it must only have one row selection and one column selection with nothing else.')
+	print('EX: A1 or 3B')
 
 	board = emptyBoard()
-
 
 	while True:
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 		displayBoard(board)
 		row, col = userMove(board)
-		updateBoard(row, col, board, playerValues.X_PLAYER)
+		updateBoard(row, col, board, PlayerValues.X_PLAYER)
 		row, col = botMove(board)
-		updateBoard(row, col, board, playerValues.O_PLAYER)
+		updateBoard(row, col, board, PlayerValues.O_PLAYER)
 
 
 
