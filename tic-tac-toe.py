@@ -166,7 +166,7 @@ def displayResult(game_state):
 # functions
 ##########################################################################################
 # run the game
-def playTikTacToe():
+def playTicTacToe():
 	random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 	# print('The Xs play first') # TODO: make the Xs play first
 	# user = input('Do you want to be Xs or Os? ')
@@ -200,4 +200,4 @@ def playTikTacToe():
 
 
 if __name__ == "__main__":
-	playTikTacToe()
+	playTicTacToe()
