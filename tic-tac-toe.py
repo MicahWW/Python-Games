@@ -1,18 +1,6 @@
-﻿from enum import Enum
-import sys
-import random
+﻿import random
 from datetime import datetime
 
-class PlayerValues(Enum):
-	BLANK_POS		= 0
-	X_PLAYER		= 1
-	O_PLAYER		= 2
-
-class GameStates(Enum):
-	NO_WINNER		= 0
-	X_WINNER		= 1
-	O_WINNER		= 2
-	DRAW_GAME		= 3
 ##########################################################################################
 
 class TicTacToe:
