@@ -212,7 +212,7 @@ class TicTacToe:
 		else:
 			not_bot_icon = self.PLAYER_0_ICON
 		# Initialize score_keeper, the variable that will hold the dict returned by Counter to determine if a win is imminent and should be blocked
-		score_keeper = Counter([])
+		score_keeper = {}
 		# Tuples containing the (row,col) of all possible win scenarios
 		win_options = [
 			[(0, 0), (0, 1), (0, 2)],
@@ -230,7 +230,7 @@ class TicTacToe:
 			# determine what is in each space and record with score_keeper
 			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
 			for i in option:
-				score_keeper += Counter(self.board[i[0]][i[1]])
+				score_keeper += {self.board[i[0]][i[1]]: 1}
 			# if there are two other player icons set to win and a blank space available, select the blank space to block the player from winning
 			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
 				for i in option:
