@@ -245,7 +245,6 @@ class TicTacToe:
 						col = i[1]
 						return row, col
 
-
 		# If the bot escapes the win-checker loop and finds to imminent win scenarios, select a random space
 		while not valid_move:
 			row = random.choice([0, 1, 2])
