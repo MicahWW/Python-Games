@@ -109,7 +109,7 @@ class TicTacToe:
 		self.displayBoard()
 		while True:
 			print('First player\'s turn.')
-			row, col = player_0_move()
+			row, col = player_0_move(self.PLAYER_0_ICON)
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
 			game_state = self.checkBoard()
@@ -118,7 +118,7 @@ class TicTacToe:
 				break
 
 			print('Second player\'s turn.')
-			row, col = player_1_move()
+			row, col = player_1_move(self.PLAYER_1_ICON)
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
 			game_state = self.checkBoard()
@@ -148,7 +148,7 @@ class TicTacToe:
 		else:
 			print('The game ended in a draw')
 
-	def userMove(self, *player_icon):
+	def userMove(self, player_icon):
 		# The player_icon optional argument is not used in userMove but is necessary to avoid bugs with botMove.
 		# See how player_icon argument is used in botMove(self, player_icon),
 		# and how both of these functions are used in startTerminalGame(self) for details.
@@ -196,7 +196,7 @@ class TicTacToe:
 
 			print('Invalid answer')
 
-	def botMove(self, *player_icon):
+	def botMove(self, player_icon):
 		"""The brains of the most badass, unbeatable bot this side of the singularity.
 		Okay probably not, it's prolly hella buggy, but it should at least block easy wins.
 
@@ -230,13 +230,21 @@ class TicTacToe:
 			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
 			for i in option:
 				score_keeper[self.board[i[0]][i[1]]] += 1
-			# if there are two other player icons set to win and a blank space available, select the blank space to block the player from winning
-			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+
+			if score_keeper[player_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
 				for i in option:
-					if i == self.BLANK_POS_ICON:
+					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
 						row = i[0]
 						col = i[1]
 						return row, col
+			# if there are two other player icons set to win and a blank space available, select the blank space to block the player from winning
+			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+				for i in option:
+					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
+						row = i[0]
+						col = i[1]
+						return row, col
+
 
 		# If the bot escapes the win-checker loop and finds to imminent win scenarios, select a random space
 		while not valid_move:
