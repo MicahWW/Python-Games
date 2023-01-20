@@ -1,6 +1,7 @@
 ﻿import random
 from datetime import datetime
 
+
 ##########################################################################################
 
 class TicTacToe:
@@ -24,19 +25,16 @@ class TicTacToe:
 
 	def emptyBoard(self):
 		return [
-		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
-		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
-		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON]
-		]
-
+			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
+			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
+			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON]
+			]
 
 	def checkValidMove(self, row, col):
 		return self.board[row][col] == self.BLANK_POS_ICON
 
-
 	def updateBoard(self, row, col, player_icon):
 		self.board[row][col] = player_icon
-
 
 	def checkBoard(self):
 		# check for win in rows
@@ -55,13 +53,13 @@ class TicTacToe:
 
 		# check for win in diagonals
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_0_ICON:
-				return self.X_WINNER
+			return self.X_WINNER
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_0_ICON:
-				return self.X_WINNER
+			return self.X_WINNER
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_1_ICON:
-				return self.O_WINNER
+			return self.O_WINNER
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_1_ICON:
-				return self.O_WINNER
+			return self.O_WINNER
 
 		# check if the board is full
 		for row in self.board:
@@ -101,7 +99,7 @@ class TicTacToe:
 				player_1_move = self.userMove
 		# multiplayer
 		else:
-			print (f'{self.PLAYER_0_ICON}s plays first, decide who will be the first player.')
+			print(f'{self.PLAYER_0_ICON}s plays first, decide who will be the first player.')
 			player_0_move = self.userMove
 			player_1_move = self.userMove
 
@@ -109,7 +107,7 @@ class TicTacToe:
 		self.displayBoard()
 		while True:
 			print('First player\'s turn.')
-			row, col = player_0_move()
+			row, col = player_0_move(self.PLAYER_0_ICON)
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
 			game_state = self.checkBoard()
@@ -118,14 +116,13 @@ class TicTacToe:
 				break
 
 			print('Second player\'s turn.')
-			row, col = player_1_move()
+			row, col = player_1_move(self.PLAYER_1_ICON)
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
 			game_state = self.checkBoard()
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
 				break
-
 
 	def displayBoard(self):
 		result = '     A | B | C \n\n'
@@ -141,7 +138,6 @@ class TicTacToe:
 				result += '\n    ═══╬═══╬═══\n'
 		print(result)
 
-
 	def displayResult(self, game_state):
 		if game_state == self.O_WINNER:
 			print('O won the game!')
@@ -150,8 +146,10 @@ class TicTacToe:
 		else:
 			print('The game ended in a draw')
 
-
-	def userMove(self):
+	def userMove(self, player_icon):
+		# The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
+		# See how player_icon argument is used in botMove(self, player_icon),
+		# and how both of these functions are used in startTerminalGame(self) for details.
 		valid_move = False
 		row, col = 0, 0
 
@@ -163,8 +161,8 @@ class TicTacToe:
 		
 		return row, col
 
-
-	def promptUser(self):
+	@staticmethod
+	def promptUser():
 		while True:
 			choice = input('Where do you want to play? ')
 			if len(choice) == 2:
@@ -196,11 +194,56 @@ class TicTacToe:
 
 			print('Invalid answer')
 
+	def botMove(self, player_icon):
+		"""The brains of the most badass, unbeatable bot this side of the singularity.
+		Okay probably not, it's prolly hella buggy, but it should at least block easy wins.
 
-	def botMove(self):
+		:return: row, col as integers representing the row and column of bot's desired move."""
+
+		# Initialize valid_move as required by the while loop
 		valid_move = False
+		# Initialize row and col, because it's the right thing to do
 		row, col = 0, 0
+		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON" and all the logic that goes into figuring out if that's even the right icon to use?
+		if player_icon == self.PLAYER_0_ICON:
+			not_bot_icon = self.PLAYER_1_ICON
+		else:
+			not_bot_icon = self.PLAYER_0_ICON
+		# Tuples containing the (row,col) of all possible win scenarios
+		win_options = [
+			[(0, 0), (0, 1), (0, 2)],
+			[(1, 0), (1, 1), (1, 2)],
+			[(2, 0), (2, 1), (2, 2)],
+			[(0, 0), (1, 0), (2, 0)],
+			[(0, 1), (1, 1), (2, 1)],
+			[(0, 2), (1, 2), (2, 2)],
+			[(0, 0), (1, 1), (2, 2)],
+			[(0, 2), (1, 1), (2, 0)]
+		]
 
+		# check win scenarios by looping through win_options
+		for option in win_options:
+			score_keeper = {self.PLAYER_0_ICON: 0, self.PLAYER_1_ICON: 0, self.BLANK_POS_ICON: 0}
+			# determine what is in each space and record with score_keeper
+			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
+			for i in option:
+				score_keeper[self.board[i[0]][i[1]]] += 1
+
+			if score_keeper[player_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+				for i in option:
+					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
+						row = i[0]
+						col = i[1]
+						return row, col
+			# if there are two other player icons set to win and a blank space available, select the blank space to block the player from winning
+			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+				for i in option:
+					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
+						row = i[0]
+						col = i[1]
+						return row, col
+
+		# If the bot escapes the win-checker loop and finds to imminent win scenarios, select a random space
 		while not valid_move:
 			row = random.choice([0, 1, 2])
 			col = random.choice([0, 1, 2])
@@ -209,4 +252,4 @@ class TicTacToe:
 		return row, col
 
 if __name__ == "__main__":
-	game = TicTacToe().startTerminalGame()
+	TicTacToe().startTerminalGame()
