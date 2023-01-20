@@ -1,8 +1,12 @@
-﻿import random
+﻿"""Okay so if I change this, is it on the branch I "checked out" or the main branch?  How does this actually work?"""
+
+import random
 from datetime import datetime
 
 ##########################################################################################
 
+
+# noinspection PyBroadException
 class TicTacToe:
 	def __init__(self):
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
@@ -24,19 +28,16 @@ class TicTacToe:
 
 	def emptyBoard(self):
 		return [
-		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
-		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
-		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON]
-		]
-
+			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
+			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
+			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON]
+			]
 
 	def checkValidMove(self, row, col):
 		return self.board[row][col] == self.BLANK_POS_ICON
 
-
 	def updateBoard(self, row, col, player_icon):
 		self.board[row][col] = player_icon
-
 
 	def checkBoard(self):
 		# check for win in rows
@@ -55,13 +56,13 @@ class TicTacToe:
 
 		# check for win in diagonals
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_0_ICON:
-				return self.X_WINNER
+			return self.X_WINNER
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_0_ICON:
-				return self.X_WINNER
+			return self.X_WINNER
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_1_ICON:
-				return self.O_WINNER
+			return self.O_WINNER
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_1_ICON:
-				return self.O_WINNER
+			return self.O_WINNER
 
 		# check if the board is full
 		for row in self.board:
@@ -101,7 +102,7 @@ class TicTacToe:
 				player_1_move = self.userMove
 		# multiplayer
 		else:
-			print (f'{self.PLAYER_0_ICON}s plays first, decide who will be the first player.')
+			print(f'{self.PLAYER_0_ICON}s plays first, decide who will be the first player.')
 			player_0_move = self.userMove
 			player_1_move = self.userMove
 
@@ -126,7 +127,6 @@ class TicTacToe:
 				self.displayResult(game_state)
 				break
 
-
 	def displayBoard(self):
 		result = '     A | B | C \n\n'
 		for idx_row, row in enumerate(self.board):
@@ -141,7 +141,6 @@ class TicTacToe:
 				result += '\n    ═══╬═══╬═══\n'
 		print(result)
 
-
 	def displayResult(self, game_state):
 		if game_state == self.O_WINNER:
 			print('O won the game!')
@@ -149,7 +148,6 @@ class TicTacToe:
 			print('X won the game!')
 		else:
 			print('The game ended in a draw')
-
 
 	def userMove(self):
 		valid_move = False
@@ -163,8 +161,8 @@ class TicTacToe:
 		
 		return row, col
 
-
-	def promptUser(self):
+	@staticmethod
+	def promptUser():
 		while True:
 			choice = input('Where do you want to play? ')
 			if len(choice) == 2:
@@ -196,7 +194,6 @@ class TicTacToe:
 
 			print('Invalid answer')
 
-
 	def botMove(self):
 		valid_move = False
 		row, col = 0, 0
@@ -209,4 +206,4 @@ class TicTacToe:
 		return row, col
 
 if __name__ == "__main__":
-	game = TicTacToe().startTerminalGame()
+	TicTacToe().startTerminalGame()
