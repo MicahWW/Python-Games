@@ -1,9 +1,6 @@
-﻿"""Okay so if I change this, is it on the branch I "checked out" or the main branch?  How does this actually work?
-
-Making another change because this seems to not have worked like I expected"""
-
-import random
+﻿import random
 from datetime import datetime
+from collections import Counter
 
 ##########################################################################################
 
@@ -151,7 +148,10 @@ class TicTacToe:
 		else:
 			print('The game ended in a draw')
 
-	def userMove(self):
+	def userMove(self, *player_icon):
+		# The player_icon optional argument is not used in userMove but is necessary to avoid bugs with botMove.
+		# See how player_icon argument is used in botMove(self, player_icon),
+		# and how both of these functions are used in startTerminalGame(self) for details.
 		valid_move = False
 		row, col = 0, 0
 
@@ -196,10 +196,52 @@ class TicTacToe:
 
 			print('Invalid answer')
 
-	def botMove(self):
-		valid_move = False
-		row, col = 0, 0
+	def botMove(self, *player_icon):
+		"""The brains of the most badass, unbeatable bot this side of the singularity.
+		Okay probably not, it's prolly hella buggy, but it should at least block easy wins.
 
+		:return: row, col as integers representing the row and column of bot's desired move."""
+
+		# Initialize valid_move as required by the while loop
+		valid_move = False
+		# Initialize row and col, because it's the right thing to do
+		row, col = 0, 0
+		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON" and all the logic that goes into figuring out if that's even the right icon to use?
+		if player_icon == self.PLAYER_0_ICON:
+			not_bot_icon = self.PLAYER_1_ICON
+		else:
+			not_bot_icon = self.PLAYER_0_ICON
+		# Initialize score_keeper, the variable that will hold the dict returned by Counter to determine if a win is imminent and should be blocked
+		score_keeper = Counter([])
+		# Tuples containing the (row,col) of all possible win scenarios
+		win_options = [
+			[(0, 0), (0, 1), (0, 2)],
+			[(1, 0), (1, 1), (1, 2)],
+			[(2, 0), (2, 1), (2, 2)],
+			[(0, 0), (1, 0), (2, 0)],
+			[(0, 1), (1, 1), (2, 1)],
+			[(0, 2), (1, 2), (2, 2)],
+			[(0, 0), (1, 1), (2, 2)],
+			[(0, 2), (1, 1), (2, 0)]
+		]
+
+		# check win scenarios by looping through win_options
+		for option in win_options:
+			# determine what is in each space and record with score_keeper
+			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
+			for i in option:
+				score_keeper += Counter(self.board[i[0]][i[1]])
+			# if there are two other player icons set to win and a blank space available, select the blank space to block the player from winning
+			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+				for i in option:
+					if i == self.BLANK_POS_ICON:
+						row = i[0]
+						col = i[1]
+						return row, col
+			# Otherwise, reset score_keeper and return to the top to check the next win scenario
+			score_keeper = {}
+
+		# If the bot escapes the win-checker loop and finds to imminent win scenarios, select a random space
 		while not valid_move:
 			row = random.choice([0, 1, 2])
 			col = random.choice([0, 1, 2])
