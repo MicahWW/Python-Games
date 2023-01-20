@@ -91,22 +91,22 @@ class TicTacToe:
 
 			# set the players based off the user's choice
 			if player_choice == 'x':
-				player_0 = self.userMove
-				player_1 = self.botMove
+				player_0_move = self.userMove
+				player_1_move = self.botMove
 			else:
-				player_0 = self.botMove
-				player_1 = self.userMove
+				player_0_move = self.botMove
+				player_1_move = self.userMove
 		# multiplayer
 		else:
 			print (f'{self.PLAYER_0_ICON}s plays first, decide who will be the first player.')
-			player_0 = self.userMove
-			player_1 = self.userMove
+			player_0_move = self.userMove
+			player_1_move = self.userMove
 
 		# Start of game
 		self.displayBoard()
 		while True:
 			print('First player\'s turn.')
-			row, col = player_0()
+			row, col = player_0_move()
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
 			game_state = self.checkBoard()
@@ -115,7 +115,7 @@ class TicTacToe:
 				break
 
 			print('Second player\'s turn.')
-			row, col = player_1()
+			row, col = player_1_move()
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
 			game_state = self.checkBoard()
