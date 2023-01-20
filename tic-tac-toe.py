@@ -4,8 +4,6 @@ from datetime import datetime
 
 ##########################################################################################
 
-
-# noinspection PyBroadException
 class TicTacToe:
 	def __init__(self):
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
