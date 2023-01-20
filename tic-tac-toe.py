@@ -1,6 +1,6 @@
 ﻿import random
 from datetime import datetime
-from collections import Counter
+
 
 ##########################################################################################
 
@@ -211,8 +211,6 @@ class TicTacToe:
 			not_bot_icon = self.PLAYER_1_ICON
 		else:
 			not_bot_icon = self.PLAYER_0_ICON
-		# Initialize score_keeper, the variable that will hold the dict returned by Counter to determine if a win is imminent and should be blocked
-		score_keeper = {}
 		# Tuples containing the (row,col) of all possible win scenarios
 		win_options = [
 			[(0, 0), (0, 1), (0, 2)],
@@ -227,10 +225,11 @@ class TicTacToe:
 
 		# check win scenarios by looping through win_options
 		for option in win_options:
+			score_keeper = {self.PLAYER_0_ICON: 0, self.PLAYER_1_ICON: 0, self.BLANK_POS_ICON: 0}
 			# determine what is in each space and record with score_keeper
 			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
 			for i in option:
-				score_keeper += {self.board[i[0]][i[1]]: 1}
+				score_keeper[self.board[i[0]][i[1]]] += 1
 			# if there are two other player icons set to win and a blank space available, select the blank space to block the player from winning
 			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
 				for i in option:
@@ -238,8 +237,6 @@ class TicTacToe:
 						row = i[0]
 						col = i[1]
 						return row, col
-			# Otherwise, reset score_keeper and return to the top to check the next win scenario
-			score_keeper = {}
 
 		# If the bot escapes the win-checker loop and finds to imminent win scenarios, select a random space
 		while not valid_move:
