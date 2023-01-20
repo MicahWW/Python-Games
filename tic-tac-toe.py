@@ -79,7 +79,10 @@ class TicTacToe:
 		# choose the number of players
 		num_players = 0
 		while num_players != 1 and num_players != 2:
-			num_players = int(input('Enter the number of players (1 or 2): '))
+			try:
+				num_players = int(input('Enter the number of players (1 or 2): '))
+			except:
+				pass
 		
 		# single player
 		if num_players == 1:
