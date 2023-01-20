@@ -147,7 +147,7 @@ class TicTacToe:
 			print('The game ended in a draw')
 
 	def userMove(self, player_icon):
-		# The player_icon optional argument is not used in userMove but is necessary to avoid bugs with botMove.
+		# The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 		# See how player_icon argument is used in botMove(self, player_icon),
 		# and how both of these functions are used in startTerminalGame(self) for details.
 		valid_move = False
