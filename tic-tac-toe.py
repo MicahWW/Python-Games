@@ -1,203 +1,212 @@
-﻿from enum import Enum
-import sys
-import random
+﻿import random
 from datetime import datetime
 
-class PlayerValues(Enum):
-	BLANK_POS		= 0
-	X_PLAYER		= 1
-	O_PLAYER		= 2
-
-class GameStates(Enum):
-	NO_WINNER		= 0
-	X_WINNER		= 1
-	O_WINNER		= 2
-	DRAW_GAME		= 3
-
 ##########################################################################################
-# functions
 
+class TicTacToe:
+	def __init__(self):
+		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 
-def emptyBoard():
-	return [
-		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value],
-		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value],
-		[PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value, PlayerValues.BLANK_POS.value]
+		# Player Icons
+		self.BLANK_POS_ICON = ' '
+		self.PLAYER_0_ICON = 'X'
+		self.PLAYER_1_ICON = 'O'
+		# Game States
+		self.NO_WINNER = 0
+		self.X_WINNER = 1
+		self.O_WINNER = 2
+		self.DRAW_GAME = 3
+		
+		self.board = self.emptyBoard()
 
+	##########################################################################################
+	# behind the scenes functions
+
+	def emptyBoard(self):
+		return [
+		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
+		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
+		[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON]
 		]
 
 
-def displayBoard(board):
-	result = '     A | B | C \n\n'
-	for idx_row, row in enumerate(board):
-		result += str(idx_row) + '   '
-		for idx_col, val in enumerate(row):
-			result += ' '
-			if val == PlayerValues.BLANK_POS.value:
+	def checkValidMove(self, row, col):
+		return self.board[row][col] == self.BLANK_POS_ICON
+
+
+	def updateBoard(self, row, col, player_icon):
+		self.board[row][col] = player_icon
+
+
+	def checkBoard(self):
+		# check for win in rows
+		for row in range(0, 3):
+			if self.board[row][0] == self.board[row][1] == self.board[row][2] == self.PLAYER_0_ICON:
+				return self.X_WINNER
+			elif self.board[row][0] == self.board[row][1] == self.board[row][2] == self.PLAYER_1_ICON:
+				return self.O_WINNER
+
+		# check for win in columns
+		for col in range(0, 3):
+			if self.board[0][col] == self.board[1][col] == self.board[2][col] == self.PLAYER_0_ICON:
+				return self.X_WINNER
+			elif self.board[0][col] == self.board[1][col] == self.board[2][col] == self.PLAYER_1_ICON:
+				return self.O_WINNER
+
+		# check for win in diagonals
+		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_0_ICON:
+				return self.X_WINNER
+		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_0_ICON:
+				return self.X_WINNER
+		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_1_ICON:
+				return self.O_WINNER
+		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_1_ICON:
+				return self.O_WINNER
+
+		# check if the board is full
+		for row in self.board:
+			for col in row:
+				if col == self.BLANK_POS_ICON:
+					return self.NO_WINNER
+
+		return self.DRAW_GAME
+
+	# behind the scenes functions
+	##########################################################################################
+	# terminal functions
+
+	def startTerminalGame(self):
+		# choose the number of players
+		num_players = 0
+		while num_players != 1 and num_players != 2:
+			try:
+				num_players = int(input('Enter the number of players (1 or 2): '))
+			except:
+				pass
+		
+		# single player
+		if num_players == 1:
+			# choose the player icon
+			player_choice = 0
+			while player_choice != 'x' and player_choice != 'o':
+				player_choice = input(f'{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? ')
+				player_choice = player_choice.lower()
+
+			# set the players based off the user's choice
+			if player_choice == 'x':
+				player_0_move = self.userMove
+				player_1_move = self.botMove
+			else:
+				player_0_move = self.botMove
+				player_1_move = self.userMove
+		# multiplayer
+		else:
+			print (f'{self.PLAYER_0_ICON}s plays first, decide who will be the first player.')
+			player_0_move = self.userMove
+			player_1_move = self.userMove
+
+		# Start of game
+		self.displayBoard()
+		while True:
+			print('First player\'s turn.')
+			row, col = player_0_move()
+			self.updateBoard(row, col, self.PLAYER_0_ICON)
+			self.displayBoard()
+			game_state = self.checkBoard()
+			if game_state != self.NO_WINNER:
+				self.displayResult(game_state)
+				break
+
+			print('Second player\'s turn.')
+			row, col = player_1_move()
+			self.updateBoard(row, col, self.PLAYER_1_ICON)
+			self.displayBoard()
+			game_state = self.checkBoard()
+			if game_state != self.NO_WINNER:
+				self.displayResult(game_state)
+				break
+
+
+	def displayBoard(self):
+		result = '     A | B | C \n\n'
+		for idx_row, row in enumerate(self.board):
+			result += str(idx_row) + '   '
+			for idx_col, val in enumerate(row):
 				result += ' '
-			elif val == PlayerValues.X_PLAYER.value:
-				result += 'X'
-			elif val == PlayerValues.O_PLAYER.value:
-
-				result += 'O'
-			else:
-				# TODO: how to error handel
-				sys.exit()
-			if idx_col < 2:
-				result += ' ║'
-		if idx_row < 2:
-			result += '\n    ═══╬═══╬═══\n'
-	print(result)
+				result += val
+				
+				if idx_col < 2:
+					result += ' ║'
+			if idx_row < 2:
+				result += '\n    ═══╬═══╬═══\n'
+		print(result)
 
 
-def promptUser():
-	while True:
-		choice = input('Where do you want to play? ')
-		if len(choice) == 2:
-			choice = choice.lower()
-			if choice[0] in ['a', 'b', 'c']:
-				col = choice[0]
-			elif choice[1] in ['a', 'b', 'c']:
-				col = choice[1]
-			else:
-				col = ''
+	def displayResult(self, game_state):
+		if game_state == self.O_WINNER:
+			print('O won the game!')
+		elif game_state == self.X_WINNER:
+			print('X won the game!')
+		else:
+			print('The game ended in a draw')
 
-			if choice[0] in ['0', '1', '2']:
-				row = choice[0]
-			elif choice[1] in ['0', '1', '2']:
-				row = choice[1]
-			else:
-				row = ''
-			
-			if row != '' and col != '':
-				if col == 'a':
-					col = 0
-				elif col == 'b':
-					col = 1
+
+	def userMove(self):
+		valid_move = False
+		row, col = 0, 0
+
+		while not valid_move:
+			row, col = self.promptUser()
+			valid_move = self.checkValidMove(row, col)
+			if not valid_move:
+				print('That space is already taken')
+		
+		return row, col
+
+
+	def promptUser(self):
+		while True:
+			choice = input('Where do you want to play? ')
+			if len(choice) == 2:
+				choice = choice.lower()
+				if choice[0] in ['a', 'b', 'c']:
+					col = choice[0]
+				elif choice[1] in ['a', 'b', 'c']:
+					col = choice[1]
 				else:
-					col = 2
+					col = ''
 
-				row = int(row)
-				return row, col
+				if choice[0] in ['0', '1', '2']:
+					row = choice[0]
+				elif choice[1] in ['0', '1', '2']:
+					row = choice[1]
+				else:
+					row = ''
+			
+				if row != '' and col != '':
+					if col == 'a':
+						col = 0
+					elif col == 'b':
+						col = 1
+					else:
+						col = 2
 
-		print('Invalid answer')
+					row = int(row)
+					return row, col
 
-
-def checkValidMove(row, col, board):
-	return board[row][col] == PlayerValues.BLANK_POS.value
-
-
-def userMove(board):
-	valid_move = False
-	row, col = '', ''
-
-	while not valid_move:
-		row, col = promptUser()
-		valid_move = checkValidMove(row, col, board)
-		if not valid_move:
-			print('That space is already taken')
-
-	return row, col
+			print('Invalid answer')
 
 
+	def botMove(self):
+		valid_move = False
+		row, col = 0, 0
 
-def updateBoard(row, col, board, player_icon):
-	if isinstance(player_icon, PlayerValues):
-		board[row][col] = player_icon.value
+		while not valid_move:
+			row = random.choice([0, 1, 2])
+			col = random.choice([0, 1, 2])
+			valid_move = self.checkValidMove(row, col)
 
-	else:
-		# TODO: how to error handel
-		sys.exit()
-
-
-def botMove(board):
-	valid_move = False
-	row, col = 0, 0
-
-	while not valid_move:
-		row = random.choice([0, 1, 2])
-		col = random.choice([0, 1, 2])
-		valid_move = checkValidMove(row, col, board)
-
-	return row, col
-
-
-def checkBoard(board):
-	# check for win in rows
-	for row in range(0, 3):
-		if board[row][0] == board[row][1] == board[row][2] == PlayerValues.X_PLAYER.value:
-			return GameStates.X_WINNER
-		elif board[row][0] == board[row][1] == board[row][2] == PlayerValues.O_PLAYER.value:
-			return GameStates.O_WINNER
-
-	# check for win in columns
-	for col in range(0, 3):
-		if board[0][col] == board[1][col] == board[2][col] == PlayerValues.X_PLAYER.value:
-			return GameStates.X_WINNER
-		elif board[0][col] == board[1][col] == board[2][col] == PlayerValues.O_PLAYER.value:
-			return GameStates.O_WINNER
-
-	# check for win in diagonals
-	if board[0][0] == board[1][1] == board[2][2] == PlayerValues.X_PLAYER.value:
-			return GameStates.X_WINNER
-	if board[2][0] == board[1][1] == board[0][2] == PlayerValues.X_PLAYER.value:
-			return GameStates.X_WINNER
-	if board[0][0] == board[1][1] == board[2][2] == PlayerValues.O_PLAYER.value:
-			return GameStates.O_WINNER
-	if board[2][0] == board[1][1] == board[0][2] == PlayerValues.O_PLAYER.value:
-			return GameStates.O_WINNER
-
-	# check if the board is full
-	for row in board:
-		for col in row:
-			if col == PlayerValues.BLANK_POS.value:
-				return GameStates.NO_WINNER
-
-	return GameStates.DRAW_GAME
-
-def displayResult(game_state):
-	if game_state == GameStates.O_WINNER:
-		print('O won the game!')
-	elif game_state == GameStates.X_WINNER:
-		print('X won the game!')
-	else:
-		print('The game ended in a draw')
-
-# functions
-##########################################################################################
-# run the game
-def playTicTacToe():
-	random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
-	# print('The Xs play first') # TODO: make the Xs play first
-	# user = input('Do you want to be Xs or Os? ')
-	# user = user.lower()
-	print('When making a choice use 1, 2, or 3 for a row and A, B, or C for a column')
-	print('When entering your choice it must only have one row selection and one column selection with nothing else.')
-	print('EX: A1 or 3B')
-
-	board = emptyBoard()
-	displayBoard(board)
-
-
-	while True:
-		row, col = userMove(board)
-		updateBoard(row, col, board, PlayerValues.X_PLAYER)
-		displayBoard(board)
-		game_state = checkBoard(board)
-		if game_state != GameStates.NO_WINNER:
-			displayResult(game_state)
-			break
-
-		print ('Processing bot\'s move')
-		row, col = botMove(board)
-		updateBoard(row, col, board, PlayerValues.O_PLAYER)
-		displayBoard(board)
-		game_state = checkBoard(board)
-		if game_state != GameStates.NO_WINNER:
-			displayResult(game_state)
-			break
-
-
+		return row, col
 
 if __name__ == "__main__":
-	playTicTacToe()
+	game = TicTacToe().startTerminalGame()
