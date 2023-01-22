@@ -10,7 +10,7 @@ while cont:
 		print(f'{idx}: {game.gameName()}')
 
 	selection = -1
-	while not (0 <= selection < len(games)):
+	while not (0 < selection < len(games)):
 		print('To exit type \'exit\'')
 		selection = input('Which do you want to play? ')
 
