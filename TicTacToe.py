@@ -77,7 +77,6 @@ class TicTacToe:
 	# terminal functions
 
 	def terminalGame(self):
-		self.board = self.emptyBoard()
 		# choose the number of players
 		num_players = 0
 		while num_players != 1 and num_players != 2:
@@ -117,6 +116,7 @@ class TicTacToe:
 			game_state = self.checkBoard()
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
+				self.board = self.emptyBoard()
 				break
 
 			print('Second player\'s turn.')
@@ -126,6 +126,7 @@ class TicTacToe:
 			game_state = self.checkBoard()
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
+				self.board = self.emptyBoard()
 				break
 
 	def displayBoard(self):
