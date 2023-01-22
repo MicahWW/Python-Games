@@ -116,7 +116,6 @@ class TicTacToe:
 			game_state = self.checkBoard()
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
-				self.board = self.emptyBoard()
 				break
 
 			print('Second player\'s turn.')
@@ -126,8 +125,8 @@ class TicTacToe:
 			game_state = self.checkBoard()
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
-				self.board = self.emptyBoard()
 				break
+		self.board = self.emptyBoard()
 
 	def displayBoard(self):
 		result = '     A | B | C \n\n'
