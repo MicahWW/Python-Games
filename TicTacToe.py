@@ -202,16 +202,17 @@ class TicTacToe:
 				result += '\n    ═══╬═══╬═══\n'
 		print(result)
 
-	"""Checks the give game_state and displays how the game ended.
 	
-	:param game_state: the state that the game is in can be one of the below:
+	def displayResult(self, game_state):
+		"""Checks the give game_state and displays how the game ended.
+	
+		:param game_state: the state that the game is in can be one of the below:
 			1. NO_WINNER (continue the game)
 			2. X_WINNER (Player 0 wins)
 			3. O_WINNER (Player 1 wins)
 			4. DRAW_GAME
 			Option 1 (NO_WINNER) was included but nothing happens if that game state is passed
-	"""
-	def displayResult(self, game_state):
+		"""
 		if game_state == self.O_WINNER:
 			print('O won the game!')
 		elif game_state == self.X_WINNER:
@@ -219,13 +220,14 @@ class TicTacToe:
 		else:
 			print('The game ended in a draw')
 
-	"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc
 	
-	:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
+	def userMove(self, player_icon):
+		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc
+	
+		:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 					See how player_icon argument is used in botMove(self, player_icon),
 					and how both of these functions are used in startTerminalGame(self) for details.
-	"""
-	def userMove(self, player_icon):
+		"""
 		# The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 		# See how player_icon argument is used in botMove(self, player_icon),
 		# and how both of these functions are used in startTerminalGame(self) for details.
