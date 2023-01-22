@@ -6,7 +6,7 @@ from datetime import datetime
 
 class TicTacToe:
 	def gameName(self):
-		return 'TicTacToe'
+		return 'Tic-Tac-Toe'
 	
 	def __init__(self):
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
