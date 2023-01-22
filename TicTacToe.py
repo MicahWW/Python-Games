@@ -271,8 +271,6 @@ class TicTacToe:
 						col = 0
 					elif col == 'b':
 						col = 1
-					# Does the use of "else" here open us up to a bug where the last column is selected in a weird scenario?
-					# Going through the logic it seems solid to me but if it were obvious it wouldn't really be a bug, would it?
 					else:
 						col = 2
 
