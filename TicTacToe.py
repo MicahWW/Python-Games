@@ -10,7 +10,8 @@ class TicTacToe:
 
 	Included functions:
 		- __init__(self)
-		- emptyBoard(self) - generates an empty board
+		- gameName(self) - returns the name of the game (namely, the name "Tic-Tac-Toe")
+    - emptyBoard(self) - generates an empty board
 		- checkValidMove(self, row, col) - returns "True" if a move is valid
 		- updateBoard(self, row, col, player_icon) - assigns player icon to a given space
 		- checkBoard(self) - determines if the game has been won or drawn
@@ -21,7 +22,7 @@ class TicTacToe:
 		- promptUser() - asks for and processes user input
 		- botMove(self, player_icon) - brains of the bot for single-player mode
 	"""
-
+  
 	def __init__(self):
 		"""
 		Initializes TicTacToe object with
@@ -46,6 +47,8 @@ class TicTacToe:
 		# Initialize empty board
 		self.board = self.emptyBoard()
 
+  def gameName(self):
+		return 'Tic-Tac-Toe'
 	##########################################################################################
 	# behind the scenes functions
 
@@ -125,7 +128,7 @@ class TicTacToe:
 	##########################################################################################
 	# terminal functions
 
-	def startTerminalGame(self):
+	def terminalGame(self):
 		"""Prints messages to allow the user to select number of players and player icon,
 		then begins and runs the game by calling the necessary functions.
 
@@ -133,6 +136,7 @@ class TicTacToe:
 		I'm thinking single/multi-player selection can be it's own function, and maybe choosing player icons as well.
 		Taking those two chunks and leaving only the last "start of game" block would put this around 20 lines.
 		"""
+
 		# choose the number of players
 		num_players = 0
 		while num_players != 1 and num_players != 2:
@@ -182,6 +186,7 @@ class TicTacToe:
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
 				break
+		self.board = self.emptyBoard()
 
 	def displayBoard(self):
 		"""Prints the board for the user to see.
@@ -336,4 +341,4 @@ class TicTacToe:
 		return row, col
 
 if __name__ == "__main__":
-	TicTacToe().startTerminalGame()
+	TicTacToe().terminalGame()
