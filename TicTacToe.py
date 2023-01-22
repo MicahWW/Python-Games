@@ -81,7 +81,6 @@ class TicTacToe:
 		"""
 		self.board[row][col] = player_icon
 
-	# TODO: found some more references to "x" and "o" as opposed to "player_0" and "player_1"
 	def checkBoard(self):
 		"""Checks the board for endgame scenarios, either a draw or a win by either player.
 
@@ -203,8 +202,7 @@ class TicTacToe:
 				result += '\n    ═══╬═══╬═══\n'
 		print(result)
 
-	# TODO:  more "X" and "O" here!
-	# TODO:  also didn't write the docstring for this one, figured I'd leave you a couple ;p
+	# TODO:  didn't write the docstring for this one, figured I'd leave you a couple ;p
 	def displayResult(self, game_state):
 		if game_state == self.O_WINNER:
 			print('O won the game!')
@@ -321,7 +319,6 @@ class TicTacToe:
 						return row, col
 
 		# If the bot escapes the win-checker loop and finds no imminent win scenarios, select a random space
-		# TODO: write a more strategic approach for the bot to take if there are no imminent win scenarios
 		while not valid_move:
 			row = random.choice([0, 1, 2])
 			col = random.choice([0, 1, 2])
