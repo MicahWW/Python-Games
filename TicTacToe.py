@@ -219,7 +219,12 @@ class TicTacToe:
 		else:
 			print('The game ended in a draw')
 
-	# TODO: docstring
+	"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc
+	
+	:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
+					See how player_icon argument is used in botMove(self, player_icon),
+					and how both of these functions are used in startTerminalGame(self) for details.
+	"""
 	def userMove(self, player_icon):
 		# The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 		# See how player_icon argument is used in botMove(self, player_icon),
