@@ -202,7 +202,15 @@ class TicTacToe:
 				result += '\n    ═══╬═══╬═══\n'
 		print(result)
 
-	# TODO:  didn't write the docstring for this one, figured I'd leave you a couple ;p
+	"""Checks the give game_state and displays how the game ended.
+	
+	:param game_state: the state that the game is in can be one of the below:
+			1. NO_WINNER (continue the game)
+			2. X_WINNER (Player 0 wins)
+			3. O_WINNER (Player 1 wins)
+			4. DRAW_GAME
+			Option 1 (NO_WINNER) was included but nothing happens if that game state is passed
+	"""
 	def displayResult(self, game_state):
 		if game_state == self.O_WINNER:
 			print('O won the game!')
