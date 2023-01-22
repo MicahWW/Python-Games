@@ -280,7 +280,7 @@ class TicTacToe:
 			print('Invalid answer')
 
 	def botMove(self, player_icon):
-		"""The brains of the most badass, unbeatable bot this side of the singularity.
+		"""The brains of the most unbeatable bot this side of the singularity.
 		Okay probably not, but it should at least block easy wins.
 
 		:param player_icon: either self.PLAYER_0_ICON or self.PLAYER_1_ICON, used by the bot to distinguish user from bot.
