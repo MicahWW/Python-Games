@@ -5,6 +5,9 @@ from datetime import datetime
 ##########################################################################################
 
 class TicTacToe:
+	def gameName(self):
+		return 'Tic-Tac-Toe'
+	
 	def __init__(self):
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 
@@ -73,7 +76,7 @@ class TicTacToe:
 	##########################################################################################
 	# terminal functions
 
-	def startTerminalGame(self):
+	def terminalGame(self):
 		# choose the number of players
 		num_players = 0
 		while num_players != 1 and num_players != 2:
@@ -123,6 +126,7 @@ class TicTacToe:
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
 				break
+		self.board = self.emptyBoard()
 
 	def displayBoard(self):
 		result = '     A | B | C \n\n'
@@ -252,4 +256,4 @@ class TicTacToe:
 		return row, col
 
 if __name__ == "__main__":
-	TicTacToe().startTerminalGame()
+	TicTacToe().terminalGame()
