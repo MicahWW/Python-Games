@@ -11,7 +11,7 @@ class TicTacToe:
 	Included functions:
 		- __init__(self)
 		- gameName(self) - returns the name of the game (namely, the name "Tic-Tac-Toe")
-    - emptyBoard(self) - generates an empty board
+		- emptyBoard(self) - generates an empty board
 		- checkValidMove(self, row, col) - returns "True" if a move is valid
 		- updateBoard(self, row, col, player_icon) - assigns player icon to a given space
 		- checkBoard(self) - determines if the game has been won or drawn
@@ -22,7 +22,7 @@ class TicTacToe:
 		- promptUser() - asks for and processes user input
 		- botMove(self, player_icon) - brains of the bot for single-player mode
 	"""
-  
+
 	def __init__(self):
 		"""
 		Initializes TicTacToe object with
@@ -47,8 +47,14 @@ class TicTacToe:
 		# Initialize empty board
 		self.board = self.emptyBoard()
 
-  def gameName(self):
+	@staticmethod
+	def gameName():
+		"""returns the name of the game (namely, the name "Tic-Tac-Toe").
+		:return: a string containing the name of the game.
+		"""
+
 		return 'Tic-Tac-Toe'
+
 	##########################################################################################
 	# behind the scenes functions
 
@@ -71,6 +77,7 @@ class TicTacToe:
 		:param col: the column of the space to be checked.
 		:return: a boolean, True if the space is empty and the desired move is valid; False if the move is invalid.
 		"""
+
 		return self.board[row][col] == self.BLANK_POS_ICON
 
 	def updateBoard(self, row, col, player_icon):
@@ -81,6 +88,7 @@ class TicTacToe:
 		:param col: the column of the space to be updated.
 		:param player_icon: the icon to be put in the space (traditionally X or O).
 		"""
+
 		self.board[row][col] = player_icon
 
 	def checkBoard(self):
@@ -92,6 +100,7 @@ class TicTacToe:
 			3. O_WINNER (Player 1 wins)
 			4. DRAW_GAME
 		"""
+
 		# check for win in rows
 		for row in range(0, 3):
 			if self.board[row][0] == self.board[row][1] == self.board[row][2] == self.PLAYER_0_ICON:
@@ -124,6 +133,67 @@ class TicTacToe:
 
 		return self.DRAW_GAME
 
+	def botMove(self, player_icon):
+		"""The brains of the most unbeatable bot this side of the singularity.
+		Okay probably not, but it should at least block easy wins.
+
+		:param player_icon: either self.PLAYER_0_ICON or self.PLAYER_1_ICON, used by the bot to distinguish user from bot.
+		:return: (row, col) as integers representing the row and column of bot's desired move.
+		"""
+
+		# Initialize valid_move as required by the while loop
+		valid_move = False
+		# Initialize row and col, because it's the right thing to do
+		row, col = 0, 0
+		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON" and all the logic that goes into figuring out if that's even the right icon to use?
+		if player_icon == self.PLAYER_0_ICON:
+			not_bot_icon = self.PLAYER_1_ICON
+		else:
+			not_bot_icon = self.PLAYER_0_ICON
+		# List of tuples containing the (row,col) of all possible win scenarios
+		win_options = [
+			[(0, 0), (0, 1), (0, 2)],
+			[(1, 0), (1, 1), (1, 2)],
+			[(2, 0), (2, 1), (2, 2)],
+			[(0, 0), (1, 0), (2, 0)],
+			[(0, 1), (1, 1), (2, 1)],
+			[(0, 2), (1, 2), (2, 2)],
+			[(0, 0), (1, 1), (2, 2)],
+			[(0, 2), (1, 1), (2, 0)]
+		]
+
+		# check win scenarios by looping through win_options list
+		for option in win_options:
+			# Initialize score_keeper for reading the board for win scenarios
+			score_keeper = {self.PLAYER_0_ICON: 0, self.PLAYER_1_ICON: 0, self.BLANK_POS_ICON: 0}
+			# determine what is in each space and record with score_keeper
+			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
+			for i in option:
+				score_keeper[self.board[i[0]][i[1]]] += 1
+
+			# If there are two bot icons set to win and a blank space available, take the blank space to win the game
+			if score_keeper[player_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+				for i in option:
+					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
+						row = i[0]
+						col = i[1]
+						return row, col
+			# if there are two opponent icons set to win and a blank space available, select the blank space to block the opponent from winning
+			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+				for i in option:
+					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
+						row = i[0]
+						col = i[1]
+						return row, col
+
+		# If the bot escapes the win-checker loop and finds no imminent win scenarios, select a random space
+		while not valid_move:
+			row = random.choice([0, 1, 2])
+			col = random.choice([0, 1, 2])
+			valid_move = self.checkValidMove(row, col)
+
+		return row, col
+
 	# behind the scenes functions
 	##########################################################################################
 	# terminal functions
@@ -131,10 +201,6 @@ class TicTacToe:
 	def terminalGame(self):
 		"""Prints messages to allow the user to select number of players and player icon,
 		then begins and runs the game by calling the necessary functions.
-
-		This function is over 50 lines long, do we want to split it up some?
-		I'm thinking single/multi-player selection can be it's own function, and maybe choosing player icons as well.
-		Taking those two chunks and leaving only the last "start of game" block would put this around 20 lines.
 		"""
 
 		# choose the number of players
@@ -193,6 +259,7 @@ class TicTacToe:
 
 		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
 		"""
+
 		result = '     A | B | C \n\n'
 		for idx_row, row in enumerate(self.board):
 			result += str(idx_row) + '   '
@@ -206,7 +273,6 @@ class TicTacToe:
 				result += '\n    ═══╬═══╬═══\n'
 		print(result)
 
-	
 	def displayResult(self, game_state):
 		"""Checks the give game_state and displays how the game ended.
 	
@@ -217,6 +283,7 @@ class TicTacToe:
 			4. DRAW_GAME
 			Option 1 (NO_WINNER) was included but nothing happens if that game state is passed
 		"""
+
 		if game_state == self.O_WINNER:
 			print('O won the game!')
 		elif game_state == self.X_WINNER:
@@ -224,14 +291,14 @@ class TicTacToe:
 		else:
 			print('The game ended in a draw')
 
-	
 	def userMove(self, player_icon):
-		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc
+		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc.)
 	
 		:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 					See how player_icon argument is used in botMove(self, player_icon),
 					and how both of these functions are used in startTerminalGame(self) for details.
 		"""
+
 		valid_move = False
 		row, col = 0, 0
 
@@ -249,6 +316,7 @@ class TicTacToe:
 
 		:return: (row, col) as the row and column of the space selected by the user for their move.
 		"""
+
 		while True:
 			choice = input('Where do you want to play? ')
 			if len(choice) == 2:
@@ -279,66 +347,6 @@ class TicTacToe:
 					return row, col
 
 			print('Invalid answer')
-
-	def botMove(self, player_icon):
-		"""The brains of the most unbeatable bot this side of the singularity.
-		Okay probably not, but it should at least block easy wins.
-
-		:param player_icon: either self.PLAYER_0_ICON or self.PLAYER_1_ICON, used by the bot to distinguish user from bot.
-		:return: (row, col) as integers representing the row and column of bot's desired move."""
-
-		# Initialize valid_move as required by the while loop
-		valid_move = False
-		# Initialize row and col, because it's the right thing to do
-		row, col = 0, 0
-		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON" and all the logic that goes into figuring out if that's even the right icon to use?
-		if player_icon == self.PLAYER_0_ICON:
-			not_bot_icon = self.PLAYER_1_ICON
-		else:
-			not_bot_icon = self.PLAYER_0_ICON
-		# List of tuples containing the (row,col) of all possible win scenarios
-		win_options = [
-			[(0, 0), (0, 1), (0, 2)],
-			[(1, 0), (1, 1), (1, 2)],
-			[(2, 0), (2, 1), (2, 2)],
-			[(0, 0), (1, 0), (2, 0)],
-			[(0, 1), (1, 1), (2, 1)],
-			[(0, 2), (1, 2), (2, 2)],
-			[(0, 0), (1, 1), (2, 2)],
-			[(0, 2), (1, 1), (2, 0)]
-		]
-
-		# check win scenarios by looping through win_options list
-		for option in win_options:
-			# Initialize score_keeper for reading the board for win scenarios
-			score_keeper = {self.PLAYER_0_ICON: 0, self.PLAYER_1_ICON: 0, self.BLANK_POS_ICON: 0}
-			# determine what is in each space and record with score_keeper
-			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
-			for i in option:
-				score_keeper[self.board[i[0]][i[1]]] += 1
-
-			# If there are two bot icons set to win and a blank space available, take the blank space to win the game
-			if score_keeper[player_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
-				for i in option:
-					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
-						row = i[0]
-						col = i[1]
-						return row, col
-			# if there are two opponent icons set to win and a blank space available, select the blank space to block the opponent from winning
-			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
-				for i in option:
-					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
-						row = i[0]
-						col = i[1]
-						return row, col
-
-		# If the bot escapes the win-checker loop and finds no imminent win scenarios, select a random space
-		while not valid_move:
-			row = random.choice([0, 1, 2])
-			col = random.choice([0, 1, 2])
-			valid_move = self.checkValidMove(row, col)
-
-		return row, col
 
 if __name__ == "__main__":
 	TicTacToe().terminalGame()
