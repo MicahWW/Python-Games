@@ -31,7 +31,6 @@ class TicTacToe:
 			- and an empty board.
 		"""
 
-		# Why is random seed here?  For the bot to choose random moves?
 		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
 
 		# Player Icons
