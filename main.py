@@ -9,28 +9,24 @@ while True:
 		print(f'{idx}: {game.gameName()}')
 
 	selection = -1
-	while not (0 < selection < len(games)):
-		print('To exit type \'exit\'\n')
-		selection = input('Which do you want to play?\nEnter game number: ')
+	while not (0 <= selection < len(games)):
+		print('\nWhich do you want to play?')
+		selection = input('To select a game enter it\'s number, or to exit enter \'exit\': ')
 
-		try:
+		if selection.isnumeric():
 			selection = int(selection) - 1
-			games[selection].terminalGame()
-			cont = input("Would you like to play again? (y/n): ")
-			while cont.lower() == "y":
+		elif selection == 'exit':
+			exit(0)
+		else:
+			print('Invalid input')
+			continue
+
+		if selection < len(games):
+			cont = True
+			while cont:
 				games[selection].terminalGame()
-				cont = input("Would you like to play again? (y/n): ")
-			reselect = input("Would you like to play a different game? (y/n): ")
-			if reselect.lower() == "y":
-				pass
-			else:
-				exit(0)
-		except ValueError:
-			if selection.lower() == 'exit':
-				exit(0)
-			else:
-				print(f'Please enter a number between 1 and {len(games)}, or enter "exit" to quit.\n')
-				selection = -1
-		except IndexError:
+				cont = input('Would you like to play this game again? (y/n): ')
+				cont = True if cont.lower() == 'y' else False
+		else:
 			print('There are not that many games!')
-			print(f'Please enter a number between 1 and {len(games)}, or enter "exit" to quit.\n')
+			continue
