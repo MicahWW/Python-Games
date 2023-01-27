@@ -40,8 +40,8 @@ class TicTacToe:
 		self.PLAYER_1_ICON = 'O'
 		# Game States
 		self.NO_WINNER = 0
-		self.X_WINNER = 1
-		self.O_WINNER = 2
+		self.PLAYER_0_WINNER = 1
+		self.PLAYER_1_WINNER = 2
 		self.DRAW_GAME = 3
 
 		# Initialize empty board
@@ -96,34 +96,34 @@ class TicTacToe:
 
 		:return: the state of the game, as one of the following:
 			1. NO_WINNER (continue the game)
-			2. X_WINNER (Player 0 wins)
-			3. O_WINNER (Player 1 wins)
+			2. PLAYER_0_WINNER
+			3. PLAYER_1_WINNER
 			4. DRAW_GAME
 		"""
 
 		# check for win in rows
 		for row in range(0, 3):
 			if self.board[row][0] == self.board[row][1] == self.board[row][2] == self.PLAYER_0_ICON:
-				return self.X_WINNER
+				return self.PLAYER_0_WINNER
 			elif self.board[row][0] == self.board[row][1] == self.board[row][2] == self.PLAYER_1_ICON:
-				return self.O_WINNER
+				return self.PLAYER_1_WINNER
 
 		# check for win in columns
 		for col in range(0, 3):
 			if self.board[0][col] == self.board[1][col] == self.board[2][col] == self.PLAYER_0_ICON:
-				return self.X_WINNER
+				return self.PLAYER_0_WINNER
 			elif self.board[0][col] == self.board[1][col] == self.board[2][col] == self.PLAYER_1_ICON:
-				return self.O_WINNER
+				return self.PLAYER_1_WINNER
 
 		# check for win in diagonals
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_0_ICON:
-			return self.X_WINNER
+			return self.PLAYER_0_WINNER
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_0_ICON:
-			return self.X_WINNER
+			return self.PLAYER_0_WINNER
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_1_ICON:
-			return self.O_WINNER
+			return self.PLAYER_1_WINNER
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_1_ICON:
-			return self.O_WINNER
+			return self.PLAYER_1_WINNER
 
 		# check if the board is full
 		for row in self.board:
@@ -214,13 +214,14 @@ class TicTacToe:
 		# single player
 		if num_players == 1:
 			# choose the player icon
-			player_choice = 0
-			while player_choice != 'x' and player_choice != 'o':
+			player_choice = self.BLANK_POS_ICON
+			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 				player_choice = input(f'{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? ')
-				player_choice = player_choice.lower()
+				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
+					print('That is not a vaild option, make sure to match the letter\'s upper/lower case.')
 
 			# set the players based off the user's choice
-			if player_choice == 'x':
+			if player_choice == self.PLAYER_0_ICON:
 				player_0_move = self.userMove
 				player_1_move = self.botMove
 			else:
@@ -278,16 +279,16 @@ class TicTacToe:
 	
 		:param game_state: the state that the game is in can be one of the below:
 			1. NO_WINNER (continue the game)
-			2. X_WINNER (Player 0 wins)
-			3. O_WINNER (Player 1 wins)
+			2. PLAYER_0_WINNER
+			3. PLAYER_1_WINNER
 			4. DRAW_GAME
 			Option 1 (NO_WINNER) was included but nothing happens if that game state is passed
 		"""
 
-		if game_state == self.O_WINNER:
-			print('O won the game!')
-		elif game_state == self.X_WINNER:
-			print('X won the game!')
+		if game_state == self.PLAYER_0_WINNER:
+			print(f'{self.PLAYER_0_ICON} won the game!')
+		elif game_state == self.PLAYER_1_WINNER:
+			print(f'{self.PLAYER_1_ICON} won the game!')
 		else:
 			print('The game ended in a draw')
 
