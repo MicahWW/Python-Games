@@ -8,6 +8,8 @@ The purpose of this project is to experience and learn new things, to do so the 
 - claiming/assigning tasks through Projects
 - issue generation and tracking
 - creation of a RESTful API
+- automatic testing with GitHub actions
+- understanding CI/CD
 
 ## Project
 A small collection of game(s) written in Python that have a terminal interface along with serveral different planned GUIs, one written with Python's Tkinter and another in a webpage using a RESTful API.
