@@ -1,10 +1,8 @@
 ﻿import random
 from datetime import datetime
 
-
 ##########################################################################################
 
-# noinspection PyBroadException
 class TicTacToe:
 	"""Contains the objects and functions for running the TicTacToe game, to be called from main.py.
 
