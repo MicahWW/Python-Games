@@ -233,12 +233,12 @@ class TicTacToe:
 			player_1_move = self.userMove
 
 		# Start of game
-		self.newDisplayBoard()
+		self.displayBoard()
 		while True:
 			print('First player\'s turn.')
 			row, col = player_0_move(self.PLAYER_0_ICON)
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
-			self.newDisplayBoard()
+			self.displayBoard()
 			game_state = self.checkBoard()
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
@@ -247,49 +247,31 @@ class TicTacToe:
 			print('Second player\'s turn.')
 			row, col = player_1_move(self.PLAYER_1_ICON)
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
-			self.newDisplayBoard()
+			self.displayBoard()
 			game_state = self.checkBoard()
 			if game_state != self.NO_WINNER:
 				self.displayResult(game_state)
 				break
 		self.board = self.emptyBoard()
 
-	# def displayBoard(self):
-	# 	"""Prints the board for the user to see.
-	#
-	# 	Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
-	# 	"""
-	#
-	# 	result = '     A | B | C \n\n'
-	# 	for idx_row, row in enumerate(self.board):
-	# 		result += str(idx_row) + '   '
-	# 		for idx_col, val in enumerate(row):
-	# 			result += ' '
-	# 			result += val
-	#
-	# 			if idx_col < 2:
-	# 				result += ' ║'
-	# 		if idx_row < 2:
-	# 			result += '\n    ═══╬═══╬═══\n'
-	# 	print(result)
-
-	def newDisplayBoard(self):
+	def displayBoard(self):
+		"""Prints the board for the user to see.
+	
+		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
+		"""
 
 		result = "\n"
 		for i in range(0, 9):
 			row = floor(i / 3)
 			col = i % 3
 			if i in (0, 3, 6):
-				result += f"\t{str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} ║"
+				result += f"\t {str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} ║"
 			elif i in (1, 4, 7):
 				result += f" {str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} ║"
-			elif i in (2, 5):
-				result += f" {str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} \n   ═══╬═══╬═══\n"
-			elif i == 8:
+			elif i in (2, 5, 8):
 				result += f" {str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} \n"
-			else:
-				err = "Wait, how did we get here? I blame Cody!"
-				raise err
+				if i in (2, 5):
+					result += "\t═══╬═══╬═══\n"
 
 		print(result)
 
@@ -323,57 +305,18 @@ class TicTacToe:
 		row, col = 0, 0
 
 		while not valid_move:
-			row, col = self.newPromptUser()
+			row, col = self.promptUser()
 			valid_move = self.checkValidMove(row, col)
 			if not valid_move:
 				print('That space is already taken')
 		
 		return row, col
 
-	# @staticmethod
-	# def promptUser():
-	# 	"""Requests user input for desired move on user's turn, validates, and then returns selected space.
-	#
-	# 	:return: (row, col) as the row and column of the space selected by the user for their move.
-	# 	"""
-	#
-	# 	while True:
-	# 		choice = input('Where do you want to play? ')
-	# 		if len(choice) == 2:
-	# 			choice = choice.lower()
-	# 			if choice[0] in ['a', 'b', 'c']:
-	# 				col = choice[0]
-	# 			elif choice[1] in ['a', 'b', 'c']:
-	# 				col = choice[1]
-	# 			else:
-	# 				col = ''
-	#
-	# 			if choice[0] in ['0', '1', '2']:
-	# 				row = choice[0]
-	# 			elif choice[1] in ['0', '1', '2']:
-	# 				row = choice[1]
-	# 			else:
-	# 				row = ''
-	#
-	# 			if row != '' and col != '':
-	# 				if col == 'a':
-	# 					col = 0
-	# 				elif col == 'b':
-	# 					col = 1
-	# 				else:
-	# 					col = 2
-	#
-	# 				row = int(row)
-	# 				return row, col
-	#
-	# 		print('Invalid answer')
-
 	@staticmethod
-	def newPromptUser():
-		"""Cody's attempt to make an input scheme that matches newDisplayBoard.
-		Godspeed, oh great Plagiarizer of Micah.
-
-		:return:
+	def promptUser():
+		"""Requests user input for desired move on user's turn, validates, and then returns selected space.
+	
+		:return: (row, col) as the row and column of the space selected by the user for their move.
 		"""
 
 		while True:
