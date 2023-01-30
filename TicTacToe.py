@@ -254,7 +254,7 @@ class TicTacToe:
 				break
 		self.board = self.emptyBoard()
 
-	def displayBoard(self):
+	def displayBoard(self, blank_pos_color='\033[1;32m', exit_color_code='\033[0m'):
 		"""Prints the board for the user to see.
 
 		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
@@ -268,18 +268,18 @@ class TicTacToe:
 				if self.board[row][col] != self.BLANK_POS_ICON:
 					result += f"\t {self.board[row][col]} ║"
 				else:
-					result += f"\t\033[1;32m {i + 1} \033[0m║"
+					result += f"\t{blank_pos_color} {i + 1} {exit_color_code}║"
 			elif i in (1, 4, 7):
 				if self.board[row][col] != self.BLANK_POS_ICON:
 					result += f" {self.board[row][col]} ║"
 				else:
-					result += f"\033[1;32m {i + 1} \033[0m║"
+					result += f"{blank_pos_color} {i + 1} {exit_color_code}║"
 
 			elif i in (2, 5, 8):
 				if self.board[row][col] != self.BLANK_POS_ICON:
 					result += f" {self.board[row][col]}\n"
 				else:
-					result += f"\033[1;32m {i + 1} \033[0m\n"
+					result += f"{blank_pos_color} {i + 1} {exit_color_code}\n"
 				if i in (2, 5):
 					result += "\t═══╬═══╬═══\n"
 
