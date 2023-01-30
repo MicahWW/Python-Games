@@ -265,11 +265,21 @@ class TicTacToe:
 			row = floor(i / 3)
 			col = i % 3
 			if i in (0, 3, 6):
-				result += f"\t {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
+				if self.board[row][col] != self.BLANK_POS_ICON:
+					result += f"\t {self.board[row][col]} ║"
+				else:
+					result += f"\t\033[1;32m {i + 1} \033[0m║"
 			elif i in (1, 4, 7):
-				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
+				if self.board[row][col] != self.BLANK_POS_ICON:
+					result += f" {self.board[row][col]} ║"
+				else:
+					result += f"\033[1;32m {i + 1} \033[0m║"
+
 			elif i in (2, 5, 8):
-				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} \n"
+				if self.board[row][col] != self.BLANK_POS_ICON:
+					result += f" {self.board[row][col]}\n"
+				else:
+					result += f"\033[1;32m {i + 1} \033[0m\n"
 				if i in (2, 5):
 					result += "\t═══╬═══╬═══\n"
 
