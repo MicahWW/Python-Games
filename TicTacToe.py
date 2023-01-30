@@ -1,7 +1,10 @@
 ﻿import random
 from datetime import datetime
 from math import floor
+import os
 
+if os.name == "nt":
+	os.system('color')
 
 ##########################################################################################
 
