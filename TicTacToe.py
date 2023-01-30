@@ -1,7 +1,10 @@
 ﻿import random
 from datetime import datetime
 from math import floor
+import os
 
+if os.name == "nt":
+	os.system('color')
 
 ##########################################################################################
 
@@ -254,7 +257,7 @@ class TicTacToe:
 				break
 		self.board = self.emptyBoard()
 
-	def displayBoard(self):
+	def displayBoard(self, blank_pos_color='\033[1;32m', exit_color_code='\033[0m'):
 		"""Prints the board for the user to see.
 
 		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
@@ -265,11 +268,21 @@ class TicTacToe:
 			row = floor(i / 3)
 			col = i % 3
 			if i in (0, 3, 6):
-				result += f"\t {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
+				if self.board[row][col] != self.BLANK_POS_ICON:
+					result += f"\t {self.board[row][col]} ║"
+				else:
+					result += f"\t{blank_pos_color} {i + 1} {exit_color_code}║"
 			elif i in (1, 4, 7):
-				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
+				if self.board[row][col] != self.BLANK_POS_ICON:
+					result += f" {self.board[row][col]} ║"
+				else:
+					result += f"{blank_pos_color} {i + 1} {exit_color_code}║"
+
 			elif i in (2, 5, 8):
-				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} \n"
+				if self.board[row][col] != self.BLANK_POS_ICON:
+					result += f" {self.board[row][col]}\n"
+				else:
+					result += f"{blank_pos_color} {i + 1} {exit_color_code}\n"
 				if i in (2, 5):
 					result += "\t═══╬═══╬═══\n"
 
