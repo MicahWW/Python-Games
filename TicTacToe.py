@@ -265,11 +265,11 @@ class TicTacToe:
 			row = floor(i / 3)
 			col = i % 3
 			if i in (0, 3, 6):
-				result += f"\t {str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} ║"
+				result += f"\t {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
 			elif i in (1, 4, 7):
-				result += f" {str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} ║"
+				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
 			elif i in (2, 5, 8):
-				result += f" {str(self.board[row][col]) if self.board[row][col] != self.BLANK_POS_ICON else str(i + 1)} \n"
+				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} \n"
 				if i in (2, 5):
 					result += "\t═══╬═══╬═══\n"
 
@@ -323,8 +323,8 @@ class TicTacToe:
 			choice = input("Where do you want to play? ")
 			if len(choice) == 1 and choice.isnumeric():
 				choice = int(choice) - 1
-				row = int(floor(choice) / 3)
-				col = int(choice % 3)
+				row = floor(choice / 3)
+				col = choice % 3
 
 				return row, col
 
