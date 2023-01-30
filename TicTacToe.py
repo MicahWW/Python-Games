@@ -1,5 +1,7 @@
 ﻿import random
 from datetime import datetime
+from math import floor
+
 
 ##########################################################################################
 
@@ -215,7 +217,7 @@ class TicTacToe:
 			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 				player_choice = input(f'{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? ')
 				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
-					print('That is not a vaild option, make sure to match the letter\'s upper/lower case.')
+					print('That is not a valid option, make sure to match the letter\'s upper/lower case.')
 
 			# set the players based off the user's choice
 			if player_choice == self.PLAYER_0_ICON:
@@ -258,17 +260,19 @@ class TicTacToe:
 		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
 		"""
 
-		result = '     A | B | C \n\n'
-		for idx_row, row in enumerate(self.board):
-			result += str(idx_row) + '   '
-			for idx_col, val in enumerate(row):
-				result += ' '
-				result += val
-				
-				if idx_col < 2:
-					result += ' ║'
-			if idx_row < 2:
-				result += '\n    ═══╬═══╬═══\n'
+		result = "\n"
+		for i in range(0, 9):
+			row = floor(i / 3)
+			col = i % 3
+			if i in (0, 3, 6):
+				result += f"\t {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
+			elif i in (1, 4, 7):
+				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} ║"
+			elif i in (2, 5, 8):
+				result += f" {self.board[row][col] if self.board[row][col] != self.BLANK_POS_ICON else i + 1} \n"
+				if i in (2, 5):
+					result += "\t═══╬═══╬═══\n"
+
 		print(result)
 
 	def displayResult(self, game_state):
@@ -316,35 +320,13 @@ class TicTacToe:
 		"""
 
 		while True:
-			choice = input('Where do you want to play? ')
-			if len(choice) == 2:
-				choice = choice.lower()
-				if choice[0] in ['a', 'b', 'c']:
-					col = choice[0]
-				elif choice[1] in ['a', 'b', 'c']:
-					col = choice[1]
-				else:
-					col = ''
+			choice = input("Where do you want to play? ")
+			if len(choice) == 1 and choice.isnumeric():
+				choice = int(choice) - 1
+				row = floor(choice / 3)
+				col = choice % 3
 
-				if choice[0] in ['0', '1', '2']:
-					row = choice[0]
-				elif choice[1] in ['0', '1', '2']:
-					row = choice[1]
-				else:
-					row = ''
-			
-				if row != '' and col != '':
-					if col == 'a':
-						col = 0
-					elif col == 'b':
-						col = 1
-					else:
-						col = 2
-
-					row = int(row)
-					return row, col
-
-			print('Invalid answer')
+				return row, col
 
 if __name__ == "__main__":
 	TicTacToe().terminalGame()
