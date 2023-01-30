@@ -256,7 +256,7 @@ class TicTacToe:
 
 	def displayBoard(self):
 		"""Prints the board for the user to see.
-	
+
 		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
 		"""
 
@@ -315,7 +315,7 @@ class TicTacToe:
 	@staticmethod
 	def promptUser():
 		"""Requests user input for desired move on user's turn, validates, and then returns selected space.
-	
+
 		:return: (row, col) as the row and column of the space selected by the user for their move.
 		"""
 
