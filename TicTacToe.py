@@ -262,7 +262,7 @@ class TicTacToe:
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
 			if self.game_state != self.NO_WINNER:
-				self.displayResult(self.game_state)
+				self.displayResult()
 				break
 
 			print('Second player\'s turn.')
@@ -270,7 +270,7 @@ class TicTacToe:
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
 			if self.game_state != self.NO_WINNER:
-				self.displayResult(self.game_state)
+				self.displayResult()
 				break
 		self.resetGame()
 
