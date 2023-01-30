@@ -84,7 +84,7 @@ class TicTacToe:
 		return self.board[row][col] == self.BLANK_POS_ICON
 
 	def updateBoard(self, row, col, player_icon):
-		"""Updates the board by assigning a player_icon to a given space.
+		"""Updates the board by assigning a player_icon to a given space, before doing so checks if a valid icon
 		Does not return anything; assigns directly to the self.board object.
 
 		:param row: the row of the space to be updated.
@@ -92,7 +92,11 @@ class TicTacToe:
 		:param player_icon: the icon to be put in the space (traditionally X or O).
 		"""
 
-		self.board[row][col] = player_icon
+		if player_icon in (self.BLANK_POS_ICON, self.PLAYER_0_ICON, self.PLAYER_1_ICON):
+			self.board[row][col] = player_icon
+		else:
+			err = f"Tried to update the board with '{player_icon}' but the only choices are '{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
+			raise RuntimeError(err)
 
 	def checkBoard(self):
 		"""Checks the board for endgame scenarios, either a draw or a win by either player.
