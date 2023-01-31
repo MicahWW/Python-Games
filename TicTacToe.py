@@ -284,7 +284,7 @@ class TicTacToe:
 		return player_0_move, player_1_move
 
 	def terminalGame(self):
-		"""Starts a TikTacToe game in the terminal
+		"""Starts a TicTacToe game in the terminal and calls supporting functions.
 		"""
 
 		player_0_move, player_1_move = self.gameSettingsPrompt()
