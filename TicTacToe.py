@@ -231,10 +231,14 @@ class TicTacToe:
 				player0 = 'too long'
 				while len(player0) != 1:
 					player0 = input('What do you want first move icon to be? (Traditionaly X): ')
+					if len(player0) != 1:
+						print("Please enter a single character for the player icon")
 				
 				player1 = 'too long'
 				while len(player1) != 1:
 					player1 = input('What do you want second move icon to be? (Traditionaly O): ')
+					if len(player0) != 1:
+						print("Please enter a single character for the player icon")
 
 				self.updatePlayerIcons(player0, player1)
 				
