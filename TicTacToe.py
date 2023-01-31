@@ -289,17 +289,20 @@ class TicTacToe:
 
 		player_0_move, player_1_move = self.gameSettingsPrompt()
 		
+		print("If you wish to stop playing the game enter 'exit'.")
 		# Start of game
 		self.displayBoard()
 		while True:
 			print("First player's turn.")
 			row, col = player_0_move(self.PLAYER_0_ICON)
+			if row == -1 and col == -1: break
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
 			if self.game_state != self.NO_WINNER: break
 
 			print("Second player's turn.")
 			row, col = player_1_move(self.PLAYER_1_ICON)
+			if row == -1 and col == -1: break
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
 			if self.game_state != self.NO_WINNER: break
@@ -339,7 +342,7 @@ class TicTacToe:
 		print(result)
 
 	def displayResult(self):
-		"""Checks the give game_state and displays how the game ended.
+		"""Checks the game_state and displays how the game ended.
 		It takes in nothing and returns nothing
 		"""
 
@@ -347,9 +350,11 @@ class TicTacToe:
 			print(f"{self.PLAYER_0_ICON} won the game!")
 		elif self.game_state == self.PLAYER_1_WINNER:
 			print(f"{self.PLAYER_1_ICON} won the game!")
-
-		else:
+		elif self.game_state == self.DRAW_GAME:
 			print("The game ended in a draw")
+		else:
+			# for no winner
+			pass
 
 	def userMove(self, player_icon):
 		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc.)
@@ -364,9 +369,12 @@ class TicTacToe:
 
 		while not valid_move:
 			row, col = self.promptUser()
-			valid_move = self.checkValidMove(row, col)
-			if not valid_move:
-				print("That space is already taken")
+			if row != -1 and col != -1:
+				valid_move = self.checkValidMove(row, col)
+				if not valid_move:
+					print("That space is already taken")
+			else:
+				return row, col
 		
 		return row, col
 
@@ -385,6 +393,8 @@ class TicTacToe:
 				col = choice % 3
 
 				return row, col
+			elif choice == 'exit':
+				return -1, -1
 
 if __name__ == "__main__":
 	TicTacToe().terminalGame()
