@@ -4,7 +4,7 @@ from math import floor
 import os
 
 if os.name == "nt":
-	os.system('color')
+	os.system("color")
 
 ##########################################################################################
 
@@ -35,12 +35,12 @@ class TicTacToe:
 			- and an empty board.
 		"""
 
-		random.seed(datetime.now().strftime('%Y%m%d%H%M%S'))
+		random.seed(datetime.now().strftime("%Y%m%d%H%M%S"))
 
 		# Player Icons
-		self.BLANK_POS_ICON = ' '
-		self.PLAYER_0_ICON = 'X'
-		self.PLAYER_1_ICON = 'O'
+		self.BLANK_POS_ICON = " "
+		self.PLAYER_0_ICON = "X"
+		self.PLAYER_1_ICON = "O"
 		# Game States
 		self.NO_WINNER = 0
 		self.PLAYER_0_WINNER = 1
@@ -56,7 +56,7 @@ class TicTacToe:
 		:return: a string containing the name of the game.
 		"""
 
-		return 'Tic-Tac-Toe'
+		return "Tic-Tac-Toe"
 
 	##########################################################################################
 	# behind the scenes functions
@@ -209,7 +209,7 @@ class TicTacToe:
 		# choose the number of players
 		num_players = 0
 		while num_players != 1 and num_players != 2:
-			num_players = input('Enter the number of players (1 or 2): ')
+			num_players = input("Enter the number of players (1 or 2): ")
 			if num_players.isnumeric():
 				num_players = int(num_players)
 		
@@ -218,9 +218,9 @@ class TicTacToe:
 			# choose the player icon
 			player_choice = self.BLANK_POS_ICON
 			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
-				player_choice = input(f'{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? ')
+				player_choice = input(f"{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? ")
 				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
-					print('That is not a valid option, make sure to match the letter\'s upper/lower case.')
+					print("That is not a valid option, make sure to match the letter's upper/lower case.")
 
 			# set the players based off the user's choice
 			if player_choice == self.PLAYER_0_ICON:
@@ -231,14 +231,14 @@ class TicTacToe:
 				player_1_move = self.userMove
 		# multiplayer
 		else:
-			print(f'{self.PLAYER_0_ICON}s plays first, decide who will be the first player.')
+			print("{self.PLAYER_0_ICON}s plays first, decide who will be the first player.")
 			player_0_move = self.userMove
 			player_1_move = self.userMove
 
 		# Start of game
 		self.displayBoard()
 		while True:
-			print('First player\'s turn.')
+			print("First player's turn.")
 			row, col = player_0_move(self.PLAYER_0_ICON)
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
@@ -247,7 +247,7 @@ class TicTacToe:
 				self.displayResult(game_state)
 				break
 
-			print('Second player\'s turn.')
+			print("Second player's turn.")
 			row, col = player_1_move(self.PLAYER_1_ICON)
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
@@ -257,7 +257,7 @@ class TicTacToe:
 				break
 		self.board = self.emptyBoard()
 
-	def displayBoard(self, blank_pos_color='\033[1;32m', exit_color_code='\033[0m'):
+	def displayBoard(self, blank_pos_color="\033[1;32m", exit_color_code="\033[0m"):
 		"""Prints the board for the user to see.
 
 		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
@@ -300,11 +300,11 @@ class TicTacToe:
 		"""
 
 		if game_state == self.PLAYER_0_WINNER:
-			print(f'{self.PLAYER_0_ICON} won the game!')
+			print(f"{self.PLAYER_0_ICON} won the game!")
 		elif game_state == self.PLAYER_1_WINNER:
-			print(f'{self.PLAYER_1_ICON} won the game!')
+			print(f"{self.PLAYER_1_ICON} won the game!")
 		else:
-			print('The game ended in a draw')
+			print("The game ended in a draw")
 
 	def userMove(self, player_icon):
 		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc.)
@@ -321,7 +321,7 @@ class TicTacToe:
 			row, col = self.promptUser()
 			valid_move = self.checkValidMove(row, col)
 			if not valid_move:
-				print('That space is already taken')
+				print("That space is already taken")
 		
 		return row, col
 
