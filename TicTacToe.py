@@ -294,12 +294,14 @@ class TicTacToe:
 		while True:
 			print("First player's turn.")
 			row, col = player_0_move(self.PLAYER_0_ICON)
+			if row == -1 and col == -1: break
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
 			if self.game_state != self.NO_WINNER: break
 
 			print("Second player's turn.")
 			row, col = player_1_move(self.PLAYER_1_ICON)
+			if row == -1 and col == -1: break
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
 			if self.game_state != self.NO_WINNER: break
@@ -364,9 +366,12 @@ class TicTacToe:
 
 		while not valid_move:
 			row, col = self.promptUser()
-			valid_move = self.checkValidMove(row, col)
-			if not valid_move:
-				print("That space is already taken")
+			if row != -1 and col != -1:
+				valid_move = self.checkValidMove(row, col)
+				if not valid_move:
+					print("That space is already taken")
+			else:
+				return row, col
 		
 		return row, col
 
@@ -385,6 +390,9 @@ class TicTacToe:
 				col = choice % 3
 
 				return row, col
+			elif choice == 'exit':
+				print('Exiting...')
+				return -1, -1
 
 if __name__ == "__main__":
 	TicTacToe().terminalGame()
