@@ -220,12 +220,12 @@ class TicTacToe:
 	##########################################################################################
 	# terminal functions
 
-	def terminalGame(self):
-		"""Prints messages to allow the user to select number of players and player icon,
-		then begins and runs the game by calling the necessary functions.
+	def gameSettingsPrompt(self):
+		"""Prints messages to allow the user to select number of players then choice which icon
+		Takes no inputs
+		:returns: a tuple of the functions to call to process the 0 and 1 player moves
 		"""
 
-		# choose the number of players
 		num_players = 0
 		while num_players != 1 and num_players != 2:
 			num_players = input("Enter the number of players (1 or 2): ")
@@ -254,6 +254,14 @@ class TicTacToe:
 			player_0_move = self.userMove
 			player_1_move = self.userMove
 
+		return player_0_move, player_1_move
+
+	def terminalGame(self):
+		"""Starts a TikTacToe game in the terminal
+		"""
+
+		player_0_move, player_1_move = self.gameSettingsPrompt()
+		
 		# Start of game
 		self.displayBoard()
 		while True:
@@ -261,17 +269,15 @@ class TicTacToe:
 			row, col = player_0_move(self.PLAYER_0_ICON)
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
-			if self.game_state != self.NO_WINNER:
-				self.displayResult()
-				break
+			if self.game_state != self.NO_WINNER: break
 
 			print("Second player's turn.")
 			row, col = player_1_move(self.PLAYER_1_ICON)
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
-			if self.game_state != self.NO_WINNER:
-				self.displayResult()
-				break
+			if self.game_state != self.NO_WINNER: break
+
+		self.displayResult()
 		self.resetGame()
 
 	def displayBoard(self, blank_pos_color="\033[1;32m", exit_color_code="\033[0m"):
