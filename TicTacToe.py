@@ -289,6 +289,7 @@ class TicTacToe:
 
 		player_0_move, player_1_move = self.gameSettingsPrompt()
 		
+		print("If you wish to stop playing the game enter 'exit'.")
 		# Start of game
 		self.displayBoard()
 		while True:
@@ -341,7 +342,7 @@ class TicTacToe:
 		print(result)
 
 	def displayResult(self):
-		"""Checks the give game_state and displays how the game ended.
+		"""Checks the game_state and displays how the game ended.
 		It takes in nothing and returns nothing
 		"""
 
@@ -349,9 +350,11 @@ class TicTacToe:
 			print(f"{self.PLAYER_0_ICON} won the game!")
 		elif self.game_state == self.PLAYER_1_WINNER:
 			print(f"{self.PLAYER_1_ICON} won the game!")
-
-		else:
+		elif self.game_state == self.DRAW_GAME:
 			print("The game ended in a draw")
+		else:
+			# for no winner
+			pass
 
 	def userMove(self, player_icon):
 		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc.)
@@ -391,7 +394,6 @@ class TicTacToe:
 
 				return row, col
 			elif choice == 'exit':
-				print('Exiting...')
 				return -1, -1
 
 if __name__ == "__main__":
