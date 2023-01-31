@@ -6,6 +6,7 @@ import os
 if os.name == "nt":
 	os.system('color')
 
+
 ##########################################################################################
 
 class TicTacToe:
@@ -136,11 +137,11 @@ class TicTacToe:
 
 		return self.DRAW_GAME
 
-	def botMove(self, player_icon):
+	def botMove(self, bot_icon):
 		"""The brains of the most unbeatable bot this side of the singularity.
 		Okay probably not, but it should at least block easy wins.
 
-		:param player_icon: either self.PLAYER_0_ICON or self.PLAYER_1_ICON, used by the bot to distinguish user from bot.
+		:param bot_icon: either self.PLAYER_0_ICON or self.PLAYER_1_ICON, used by the bot to distinguish user from bot.
 		:return: (row, col) as integers representing the row and column of bot's desired move.
 		"""
 
@@ -149,7 +150,7 @@ class TicTacToe:
 		# Initialize row and col, because it's the right thing to do
 		row, col = 0, 0
 		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON" and all the logic that goes into figuring out if that's even the right icon to use?
-		if player_icon == self.PLAYER_0_ICON:
+		if bot_icon == self.PLAYER_0_ICON:
 			not_bot_icon = self.PLAYER_1_ICON
 		else:
 			not_bot_icon = self.PLAYER_0_ICON
@@ -175,7 +176,7 @@ class TicTacToe:
 				score_keeper[self.board[i[0]][i[1]]] += 1
 
 			# If there are two bot icons set to win and a blank space available, take the blank space to win the game
-			if score_keeper[player_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+			if score_keeper[bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
 				for i in option:
 					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
 						row = i[0]
@@ -189,11 +190,36 @@ class TicTacToe:
 						col = i[1]
 						return row, col
 
-		# If the bot escapes the win-checker loop and finds no imminent win scenarios, select a random space
-		while not valid_move:
-			row = random.choice([0, 1, 2])
-			col = random.choice([0, 1, 2])
-			valid_move = self.checkValidMove(row, col)
+		if bot_icon == self.PLAYER_0_ICON:
+			while not valid_move:
+				row = random.choice([0, 2])
+				col = random.choice([0, 2])
+				valid_move = self.checkValidMove(row, col)
+
+			return row, col
+
+		if bot_icon == self.PLAYER_1_ICON:
+			if self.board[1][1] == self.PLAYER_0_ICON:
+				special_board_check = 0
+				for i in range(0, 9):
+					row_check = floor(i/3)
+					col_check = i % 3
+					if i != 4 and self.board[row_check][col_check] == self.BLANK_POS_ICON:
+						special_board_check += 1
+					if special_board_check == 8:
+						row, col = 0, 2
+						return row, col
+				if self.board[2][0] == self.board[1][1] == not_bot_icon and self.board[0][2] == bot_icon and self.board[0][0] == self.board[0][1] == self.board[1][0] == self.board[1][2] == self.board[2][1] == self.board[2][2] == self.BLANK_POS_ICON:
+					row, col = 2, 2
+					return row, col
+
+			while not valid_move:
+				desired_moves = ((1, 1), (0, 1), (1, 0), (1, 2))
+				for move in desired_moves:
+					if self.checkValidMove(move[0], move[1]):
+						row, col = move[0], move[1]
+						valid_move = True
+						break
 
 		return row, col
 
