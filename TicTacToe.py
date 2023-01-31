@@ -47,8 +47,9 @@ class TicTacToe:
 		self.PLAYER_1_WINNER = 2
 		self.DRAW_GAME = 3
 
-		# Initialize empty board
+		# Initialize empty board and state
 		self.board = self.emptyBoard()
+		self.game_state = self.NO_WINNER
 
 	@staticmethod
 	def gameName():
@@ -84,7 +85,7 @@ class TicTacToe:
 		return self.board[row][col] == self.BLANK_POS_ICON
 
 	def updateBoard(self, row, col, player_icon):
-		"""Updates the board by assigning a player_icon to a given space.
+		"""Updates the board by assigning a player_icon to a given space, before doing so checks if a valid icon
 		Does not return anything; assigns directly to the self.board object.
 
 		:param row: the row of the space to be updated.
@@ -92,49 +93,59 @@ class TicTacToe:
 		:param player_icon: the icon to be put in the space (traditionally X or O).
 		"""
 
-		self.board[row][col] = player_icon
+		if player_icon in (self.BLANK_POS_ICON, self.PLAYER_0_ICON, self.PLAYER_1_ICON):
+			self.board[row][col] = player_icon
+			self.checkBoard()
+		else:
+			err = f"Tried to update the board with '{player_icon}' but the only choices are '{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
+			raise RuntimeError(err)
 
 	def checkBoard(self):
 		"""Checks the board for endgame scenarios, either a draw or a win by either player.
-
-		:return: the state of the game, as one of the following:
-			1. NO_WINNER (continue the game)
-			2. PLAYER_0_WINNER
-			3. PLAYER_1_WINNER
-			4. DRAW_GAME
+		It then sets the game_state attribute accordingly
 		"""
 
 		# check for win in rows
 		for row in range(0, 3):
 			if self.board[row][0] == self.board[row][1] == self.board[row][2] == self.PLAYER_0_ICON:
-				return self.PLAYER_0_WINNER
+				self.game_state = self.PLAYER_0_WINNER
+				return
 			elif self.board[row][0] == self.board[row][1] == self.board[row][2] == self.PLAYER_1_ICON:
-				return self.PLAYER_1_WINNER
+				self.game_state = self.PLAYER_1_WINNER
+				return
 
 		# check for win in columns
 		for col in range(0, 3):
 			if self.board[0][col] == self.board[1][col] == self.board[2][col] == self.PLAYER_0_ICON:
-				return self.PLAYER_0_WINNER
+				self.game_state = self.PLAYER_0_WINNER
+				return
 			elif self.board[0][col] == self.board[1][col] == self.board[2][col] == self.PLAYER_1_ICON:
-				return self.PLAYER_1_WINNER
+				self.game_state = self.PLAYER_1_WINNER
+				return
 
 		# check for win in diagonals
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_0_ICON:
-			return self.PLAYER_0_WINNER
+			self.game_state = self.PLAYER_0_WINNER
+			return
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_0_ICON:
-			return self.PLAYER_0_WINNER
+			self.game_state = self.PLAYER_0_WINNER
+			return
 		if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.PLAYER_1_ICON:
-			return self.PLAYER_1_WINNER
+			self.game_state = self.PLAYER_1_WINNER
+			return
 		if self.board[2][0] == self.board[1][1] == self.board[0][2] == self.PLAYER_1_ICON:
-			return self.PLAYER_1_WINNER
+			self.game_state = self.PLAYER_1_WINNER
+			return
 
 		# check if the board is full
 		for row in self.board:
 			for col in row:
 				if col == self.BLANK_POS_ICON:
-					return self.NO_WINNER
+					self.game_state = self.NO_WINNER
+					return
 
-		return self.DRAW_GAME
+		self.game_state = self.DRAW_GAME
+		return
 
 	def botMove(self, player_icon):
 		"""The brains of the most unbeatable bot this side of the singularity.
@@ -197,6 +208,14 @@ class TicTacToe:
 
 		return row, col
 
+	def resetGame(self):
+		"""Takes the necessary game attributes and resets them to their begnining state
+		Does not take in anything or returns anything
+		"""
+
+		self.board = self.emptyBoard()
+		self.game_state = self.NO_WINNER
+
 	# behind the scenes functions
 	##########################################################################################
 	# terminal functions
@@ -242,20 +261,18 @@ class TicTacToe:
 			row, col = player_0_move(self.PLAYER_0_ICON)
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
-			game_state = self.checkBoard()
-			if game_state != self.NO_WINNER:
-				self.displayResult(game_state)
+			if self.game_state != self.NO_WINNER:
+				self.displayResult()
 				break
 
 			print("Second player's turn.")
 			row, col = player_1_move(self.PLAYER_1_ICON)
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
-			game_state = self.checkBoard()
-			if game_state != self.NO_WINNER:
-				self.displayResult(game_state)
+			if self.game_state != self.NO_WINNER:
+				self.displayResult()
 				break
-		self.board = self.emptyBoard()
+		self.resetGame()
 
 	def displayBoard(self, blank_pos_color="\033[1;32m", exit_color_code="\033[0m"):
 		"""Prints the board for the user to see.
@@ -288,21 +305,16 @@ class TicTacToe:
 
 		print(result)
 
-	def displayResult(self, game_state):
+	def displayResult(self):
 		"""Checks the give game_state and displays how the game ended.
-	
-		:param game_state: the state that the game is in can be one of the below:
-			1. NO_WINNER (continue the game)
-			2. PLAYER_0_WINNER
-			3. PLAYER_1_WINNER
-			4. DRAW_GAME
-			Option 1 (NO_WINNER) was included but nothing happens if that game state is passed
+		It takes in nothing and returns nothing
 		"""
 
-		if game_state == self.PLAYER_0_WINNER:
+		if self.game_state == self.PLAYER_0_WINNER:
 			print(f"{self.PLAYER_0_ICON} won the game!")
-		elif game_state == self.PLAYER_1_WINNER:
+		elif self.game_state == self.PLAYER_1_WINNER:
 			print(f"{self.PLAYER_1_ICON} won the game!")
+
 		else:
 			print("The game ended in a draw")
 
