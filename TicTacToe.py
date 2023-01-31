@@ -216,23 +216,46 @@ class TicTacToe:
 		self.board = self.emptyBoard()
 		self.game_state = self.NO_WINNER
 
+	def updatePlayerIcons(self, player_0_icon, player_1_icon):
+		self.PLAYER_0_ICON = player_0_icon
+		self.PLAYER_1_ICON = player_1_icon
+
 	# behind the scenes functions
 	##########################################################################################
 	# terminal functions
 
+	def advancedGameSettings(self, settingToChange):
+		match settingToChange:
+			case 'change icons':
+				print('Both player icons must only be 1 character long.')
+				player0 = 'too long'
+				while len(player0) != 1:
+					player0 = input('What do you want first move icon to be? (Traditionaly X): ')
+				
+				player1 = 'too long'
+				while len(player1) != 1:
+					player1 = input('What do you want second move icon to be? (Traditionaly O): ')
+
+				self.updatePlayerIcons(player0, player1)
+				
+
 	def gameSettingsPrompt(self):
 		"""Prints messages to allow the user to select number of players then choice which icon
 		Takes no inputs
+
 		:returns: a tuple of the functions to call to process the 0 and 1 player moves
 		"""
-
+		
+		# Prompts for how many human players there will be
 		num_players = 0
 		while num_players != 1 and num_players != 2:
 			num_players = input("Enter the number of players (1 or 2): ")
 			if num_players.isnumeric():
 				num_players = int(num_players)
+			elif num_players == 'change icons':
+					self.advancedGameSettings(num_players)
 		
-		# single player
+		# if user selected single player
 		if num_players == 1:
 			# choose the player icon
 			player_choice = self.BLANK_POS_ICON
