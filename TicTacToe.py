@@ -273,7 +273,7 @@ class TicTacToe:
 				player_1_move = self.userMove
 		# multiplayer
 		else:
-			print("{self.PLAYER_0_ICON}s plays first, decide who will be the first player.")
+			print(f"{self.PLAYER_0_ICON}s plays first, decide who will be the first player.")
 			player_0_move = self.userMove
 			player_1_move = self.userMove
 
