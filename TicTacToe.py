@@ -1,5 +1,4 @@
 ﻿import random
-from datetime import datetime
 from math import floor
 import os
 
@@ -29,13 +28,11 @@ class TicTacToe:
 	def __init__(self):
 		"""
 		Initializes TicTacToe object with
-			- a random datetime seed
 			- player icons (traditionally X and O)
 			- game states (a continue/no-winner state, one win state for each player, and a draw state)
 			- and an empty board.
 		"""
 
-		random.seed(datetime.now().strftime("%Y%m%d%H%M%S"))
 
 		# Player Icons
 		self.BLANK_POS_ICON = " "
