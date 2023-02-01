@@ -2,8 +2,6 @@
 from math import floor
 import os
 
-if os.name == "nt":
-	os.system("color")
 
 ##########################################################################################
 
@@ -283,6 +281,9 @@ class TicTacToe:
 	def terminalGame(self):
 		"""Starts a TicTacToe game in the terminal and calls supporting functions.
 		"""
+
+		if os.name == "nt":
+			os.system("color")
 
 		player_0_move, player_1_move = self.gameSettingsPrompt()
 		
