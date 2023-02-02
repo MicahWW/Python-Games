@@ -25,3 +25,5 @@ jobs:
         run: |
           pip install flake8
           flake8 . --count --statistics --ignore=W191 --max-line-length=127
+      - name: Custom tests
+        run: pytest
