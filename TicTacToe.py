@@ -264,7 +264,7 @@ class TicTacToe:
 			player_choice = self.BLANK_POS_ICON
 			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 				player_choice = input(
-					f"{self.PLAYER_0_ICON}s plays first, do you want to be{self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
+					f"{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
 				)
 				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 					print("That is not a valid option, make sure to match the letter's upper/lower case.")
