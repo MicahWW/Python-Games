@@ -91,7 +91,8 @@ class TicTacToe:
 			self.board[row][col] = player_icon
 			self.checkBoard()
 		else:
-			err = f"Tried to update the board with '{player_icon}' but the only choices are '{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
+			err = f"Tried to update the board with '{player_icon}' but the only choices are"
+			err += "'{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
 			raise RuntimeError(err)
 
 	def checkBoard(self):
@@ -153,7 +154,8 @@ class TicTacToe:
 		valid_move = False
 		# Initialize row and col, because it's the right thing to do
 		row, col = 0, 0
-		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON" and all the logic that goes into figuring out if that's even the right icon to use?
+		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON"
+		# and all the logic that goes into figuring out if that's even the right icon to use?
 		if player_icon == self.PLAYER_0_ICON:
 			not_bot_icon = self.PLAYER_1_ICON
 		else:
@@ -186,7 +188,8 @@ class TicTacToe:
 						row = i[0]
 						col = i[1]
 						return row, col
-			# if there are two opponent icons set to win and a blank space available, select the blank space to block the opponent from winning
+			# if there are two opponent icons set to win and a blank space available,
+			# select the blank space to block the opponent from winning
 			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
 				for i in option:
 					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
@@ -257,7 +260,9 @@ class TicTacToe:
 			# choose the player icon
 			player_choice = self.BLANK_POS_ICON
 			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
-				player_choice = input(f"{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? ")
+				player_choice = input(
+					f"{self.PLAYER_0_ICON}s plays first, do you want to be{self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
+				)
 				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 					print("That is not a valid option, make sure to match the letter's upper/lower case.")
 
@@ -353,7 +358,8 @@ class TicTacToe:
 			pass
 
 	def userMove(self, player_icon):
-		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc.)
+		"""Processes everything that is needed for a user to make a move,
+		including checking if input was valid (through promptUser(), spot is free to move in, etc.)
 
 		:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 					See how player_icon argument is used in botMove(self, player_icon),
