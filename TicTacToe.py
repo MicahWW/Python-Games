@@ -92,7 +92,9 @@ class TicTacToe:
 			self.checkBoard()
 		else:
 			err = f"Tried to update the board with '{player_icon}' but the only choices are"
-			err += "'{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
+			err = (f"Tried to update the board with '{player_icon}' but the only choices are "
+       f"'{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'.")
+
 			raise RuntimeError(err)
 
 	def checkBoard(self):
