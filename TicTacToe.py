@@ -1,7 +1,6 @@
 ﻿import random
 from math import floor
 import os
-from typing import Tuple, Callable
 from string import printable
 
 
