@@ -1,6 +1,8 @@
 ﻿import random
 from math import floor
 import os
+from typing import Tuple, Callable
+from string import printable
 
 
 ##########################################################################################
@@ -32,7 +34,7 @@ class TicTacToe:
 		"""
 
 		# Player Icons
-		self.BLANK_POS_ICON = " "
+		self.BLANK_POS_ICON = ""
 		self.PLAYER_0_ICON = "X"
 		self.PLAYER_1_ICON = "O"
 		# Game States
@@ -87,16 +89,9 @@ class TicTacToe:
 		:param player_icon: the icon to be put in the space (traditionally X or O).
 		"""
 
-		if player_icon in (self.BLANK_POS_ICON, self.PLAYER_0_ICON, self.PLAYER_1_ICON):
+		if player_icon in printable:
 			self.board[row][col] = player_icon
 			self.checkBoard()
-		else:
-			err = (
-				f"Tried to update the board with '{player_icon}' but the only choices are "
-				f"'{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
-			)
-
-			raise RuntimeError(err)
 
 	def checkBoard(self):
 		"""Checks the board for endgame scenarios, either a draw or a win by either player.
@@ -229,13 +224,13 @@ class TicTacToe:
 			case 'change icons':
 				print('Both player icons must only be 1 character long.')
 				player0 = 'too long'
-				while len(player0) != 1:
+				while len(player0) != 1 or player0 == self.BLANK_POS_ICON:
 					player0 = input('What do you want first move icon to be? (Traditionaly X): ')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
 
 				player1 = 'too long'
-				while len(player1) != 1:
+				while len(player1) != 1 or player0 == self.BLANK_POS_ICON:
 					player1 = input('What do you want second move icon to be? (Traditionaly O): ')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
