@@ -90,6 +90,13 @@ class TicTacToe:
 		if player_icon in self.PLAYER_0_ICON or self.PLAYER_1_ICON:
 			self.board[row][col] = player_icon
 			self.checkBoard()
+		else:
+			err = (
+				f"Tried to update the board with '{player_icon}' but the only choices are "
+				f"'{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
+			)
+
+			raise RuntimeError(err)
 
 	def checkBoard(self):
 		"""Checks the board for endgame scenarios, either a draw or a win by either player.
