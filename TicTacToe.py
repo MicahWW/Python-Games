@@ -291,17 +291,17 @@ class TicTacToe:
 		while True:
 			print("First player's turn.")
 			row, col = player_0_move(self.PLAYER_0_ICON)
-			if row == -1 and col == -1: break
+			if row == -1 and col == -1: break  # noqa: E701
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
-			if self.game_state != self.NO_WINNER: break
+			if self.game_state != self.NO_WINNER: break  # noqa: E701
 
 			print("Second player's turn.")
 			row, col = player_1_move(self.PLAYER_1_ICON)
-			if row == -1 and col == -1: break
+			if row == -1 and col == -1: break  # noqa: E701
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
-			if self.game_state != self.NO_WINNER: break
+			if self.game_state != self.NO_WINNER: break  # noqa: E701
 
 		self.displayResult()
 		self.resetGame()
