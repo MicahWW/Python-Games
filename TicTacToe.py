@@ -1,6 +1,7 @@
 ﻿import random
-from math import floor
 import os
+from math import floor
+from typing import Tuple, Callable
 
 
 ##########################################################################################
@@ -100,7 +101,7 @@ class TicTacToe:
 
 	def checkBoard(self):
 		"""Checks the board for endgame scenarios, either a draw or a win by either player.
-		It then sets the game_state attribute accordingly
+		It then sets the game_state attribute accordingly.
 		"""
 
 		# check for win in rows
@@ -145,11 +146,11 @@ class TicTacToe:
 		self.game_state = self.DRAW_GAME
 		return
 
-	def botMove(self, player_icon):
+	def botMove(self, bot_icon):
 		"""The brains of the most unbeatable bot this side of the singularity.
 		Okay probably not, but it should at least block easy wins.
 
-		:param player_icon: either self.PLAYER_0_ICON or self.PLAYER_1_ICON, used by the bot to distinguish user from bot.
+		:param bot_icon: either self.PLAYER_0_ICON or self.PLAYER_1_ICON, used by the bot to distinguish user from bot.
 		:return: (row, col) as integers representing the row and column of bot's desired move.
 		"""
 
@@ -159,7 +160,7 @@ class TicTacToe:
 		row, col = 0, 0
 		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON"
 		# and all the logic that goes into figuring out if that's even the right icon to use?
-		if player_icon == self.PLAYER_0_ICON:
+		if bot_icon == self.PLAYER_0_ICON:
 			not_bot_icon = self.PLAYER_1_ICON
 		else:
 			not_bot_icon = self.PLAYER_0_ICON
@@ -185,7 +186,7 @@ class TicTacToe:
 				score_keeper[self.board[i[0]][i[1]]] += 1
 
 			# If there are two bot icons set to win and a blank space available, take the blank space to win the game
-			if score_keeper[player_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
+			if score_keeper[bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
 				for i in option:
 					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
 						row = i[0]
@@ -209,8 +210,8 @@ class TicTacToe:
 		return row, col
 
 	def resetGame(self):
-		"""Takes the necessary game attributes and resets them to their begnining state
-		Does not take in anything or returns anything
+		"""Takes the necessary game attributes and resets them to their beginning state
+		Does not take in anything or return anything
 		"""
 
 		self.board = self.emptyBoard()
@@ -224,8 +225,8 @@ class TicTacToe:
 	##########################################################################################
 	# terminal functions
 
-	def advancedGameSettings(self, settingToChange):
-		match settingToChange:
+	def advancedGameSettings(self, setting_to_change):
+		match setting_to_change:
 			case 'change icons':
 				print('Both player icons must only be 1 character long.')
 				player0 = 'too long'
@@ -242,11 +243,11 @@ class TicTacToe:
 
 				self.updatePlayerIcons(player0, player1)
 
-	def gameSettingsPrompt(self):
-		"""Prints messages to allow the user to select number of players then choice which icon
+	def gameSettingsPrompt(self) -> Tuple[Callable, Callable]:
+		"""Prints messages to allow the user to select number of players then choose their icon
 		Takes no inputs
 
-		:returns: a tuple of the functions to call to process the 0 and 1 player moves
+		:returns: a tuple of the functions to process the 0 and 1 player moves
 		"""
 
 		# Prompts for how many human players there will be
@@ -264,7 +265,7 @@ class TicTacToe:
 			player_choice = self.BLANK_POS_ICON
 			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 				player_choice = input(
-					f"{self.PLAYER_0_ICON}s plays first, do you want to be{self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
+					f"{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
 				)
 				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 					print("That is not a valid option, make sure to match the letter's upper/lower case.")
@@ -286,6 +287,7 @@ class TicTacToe:
 
 	def terminalGame(self):
 		"""Starts a TicTacToe game in the terminal and calls supporting functions.
+		Takes no inputs and makes no return.
 		"""
 
 		if os.name == "nt":
@@ -317,7 +319,8 @@ class TicTacToe:
 	def displayBoard(self, blank_pos_color="\033[1;32m", exit_color_code="\033[0m"):
 		"""Prints the board for the user to see.
 
-		Takes no arguments and gives no return; rather, calls the self.board object directly and prints directly to console.
+		Takes no arguments and gives no return;
+		rather, calls the self.board object directly and prints directly to console.
 		"""
 
 		result = "\n"
