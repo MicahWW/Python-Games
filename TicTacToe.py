@@ -66,7 +66,7 @@ class TicTacToe:
 			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
 			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
 			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON]
-			]
+		]
 
 	def checkValidMove(self, row, col):
 		"""Determines if a given move is allowed, then returns a boolean (True for valid moves, False for invalid moves).
