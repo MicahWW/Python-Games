@@ -31,7 +31,6 @@ class TicTacToe:
 			- and an empty board.
 		"""
 
-
 		# Player Icons
 		self.BLANK_POS_ICON = " "
 		self.PLAYER_0_ICON = "X"
@@ -67,7 +66,7 @@ class TicTacToe:
 			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
 			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON],
 			[self.BLANK_POS_ICON, self.BLANK_POS_ICON, self.BLANK_POS_ICON]
-			]
+		]
 
 	def checkValidMove(self, row, col):
 		"""Determines if a given move is allowed, then returns a boolean (True for valid moves, False for invalid moves).
@@ -92,7 +91,11 @@ class TicTacToe:
 			self.board[row][col] = player_icon
 			self.checkBoard()
 		else:
-			err = f"Tried to update the board with '{player_icon}' but the only choices are '{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
+			err = (
+				f"Tried to update the board with '{player_icon}' but the only choices are "
+				f"'{self.BLANK_POS_ICON}', '{self.PLAYER_0_ICON}', and '{self.PLAYER_1_ICON}'."
+			)
+
 			raise RuntimeError(err)
 
 	def checkBoard(self):
@@ -154,7 +157,8 @@ class TicTacToe:
 		valid_move = False
 		# Initialize row and col, because it's the right thing to do
 		row, col = 0, 0
-		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON" and all the logic that goes into figuring out if that's even the right icon to use?
+		# Initialize not_bot_icon because who wants to read "self.PLAYER_1_ICON"
+		# and all the logic that goes into figuring out if that's even the right icon to use?
 		if player_icon == self.PLAYER_0_ICON:
 			not_bot_icon = self.PLAYER_1_ICON
 		else:
@@ -187,7 +191,8 @@ class TicTacToe:
 						row = i[0]
 						col = i[1]
 						return row, col
-			# if there are two opponent icons set to win and a blank space available, select the blank space to block the opponent from winning
+			# if there are two opponent icons set to win and a blank space available,
+			# select the blank space to block the opponent from winning
 			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS_ICON] == 1:
 				for i in option:
 					if self.board[i[0]][i[1]] == self.BLANK_POS_ICON:
@@ -228,7 +233,7 @@ class TicTacToe:
 					player0 = input('What do you want first move icon to be? (Traditionaly X): ')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
-				
+
 				player1 = 'too long'
 				while len(player1) != 1:
 					player1 = input('What do you want second move icon to be? (Traditionaly O): ')
@@ -236,7 +241,6 @@ class TicTacToe:
 						print("Please enter a single character for the player icon")
 
 				self.updatePlayerIcons(player0, player1)
-				
 
 	def gameSettingsPrompt(self):
 		"""Prints messages to allow the user to select number of players then choice which icon
@@ -244,7 +248,7 @@ class TicTacToe:
 
 		:returns: a tuple of the functions to call to process the 0 and 1 player moves
 		"""
-		
+
 		# Prompts for how many human players there will be
 		num_players = 0
 		while num_players != 1 and num_players != 2:
@@ -252,14 +256,16 @@ class TicTacToe:
 			if num_players.isnumeric():
 				num_players = int(num_players)
 			elif num_players == 'change icons':
-					self.advancedGameSettings(num_players)
-		
+				self.advancedGameSettings(num_players)
+
 		# if user selected single player
 		if num_players == 1:
 			# choose the player icon
 			player_choice = self.BLANK_POS_ICON
 			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
-				player_choice = input(f"{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? ")
+				player_choice = input(
+					f"{self.PLAYER_0_ICON}s plays first, do you want to be{self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
+				)
 				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 					print("That is not a valid option, make sure to match the letter's upper/lower case.")
 
@@ -286,24 +292,24 @@ class TicTacToe:
 			os.system("color")
 
 		player_0_move, player_1_move = self.gameSettingsPrompt()
-		
+
 		print("If you wish to stop playing the game enter 'exit'.")
 		# Start of game
 		self.displayBoard()
 		while True:
 			print("First player's turn.")
 			row, col = player_0_move(self.PLAYER_0_ICON)
-			if row == -1 and col == -1: break
+			if row == -1 and col == -1: break  # noqa: E701
 			self.updateBoard(row, col, self.PLAYER_0_ICON)
 			self.displayBoard()
-			if self.game_state != self.NO_WINNER: break
+			if self.game_state != self.NO_WINNER: break  # noqa: E701
 
 			print("Second player's turn.")
 			row, col = player_1_move(self.PLAYER_1_ICON)
-			if row == -1 and col == -1: break
+			if row == -1 and col == -1: break  # noqa: E701
 			self.updateBoard(row, col, self.PLAYER_1_ICON)
 			self.displayBoard()
-			if self.game_state != self.NO_WINNER: break
+			if self.game_state != self.NO_WINNER: break  # noqa: E701
 
 		self.displayResult()
 		self.resetGame()
@@ -355,8 +361,9 @@ class TicTacToe:
 			pass
 
 	def userMove(self, player_icon):
-		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc.)
-	
+		"""Processes everything that is needed for a user to make a move,
+		including checking if input was valid (through promptUser(), spot is free to move in, etc.)
+
 		:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 					See how player_icon argument is used in botMove(self, player_icon),
 					and how both of these functions are used in startTerminalGame(self) for details.
@@ -373,7 +380,7 @@ class TicTacToe:
 					print("That space is already taken")
 			else:
 				return row, col
-		
+
 		return row, col
 
 	@staticmethod
@@ -393,6 +400,7 @@ class TicTacToe:
 				return row, col
 			elif choice == 'exit':
 				return -1, -1
+
 
 if __name__ == "__main__":
 	TicTacToe().terminalGame()
