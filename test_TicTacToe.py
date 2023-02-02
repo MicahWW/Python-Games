@@ -1,6 +1,6 @@
 import TicTacToe
 import pytest
-from string import printable
+from string import printable as printable_chars
 
 
 @pytest.fixture
@@ -51,11 +51,23 @@ def test_checkValidMove_correctly_evaluates_valid_moves(tic_tac_toe):
         for j in range(0, 3):
             assert tic_tac_toe.checkValidMove(i, j) is True
 
-    # Initialize a full board for the test
+    # Initialize a full board of PLAYER_0_ICON for the test
     tic_tac_toe.board = [
         [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON],
         [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON],
         [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON]
+    ]
+
+    # check that each space is not a valid move
+    for i in range(0, 3):
+        for j in range(0, 3):
+            assert tic_tac_toe.checkValidMove(i, j) is False
+
+    # Initialize a full board of PLAYER_1_ICON for the test
+    tic_tac_toe.board = [
+        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON],
+        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON],
+        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON]
     ]
 
     # check that each space is not a valid move
@@ -82,7 +94,7 @@ def test_updateBoard_updates_board_correctly(tic_tac_toe):
         [" ", " ", " "]
     ]
     # Define acceptable player icons
-    icons_to_test = printable
+    icons_to_test = printable_chars
     # Check functionality for each possible icon
     for char in icons_to_test:
         # Assign icon to a player icon
@@ -248,12 +260,12 @@ def test_updatePlayerIcons_assigns_icons(tic_tac_toe):
     """
 
     # Iterate through all printable characters, two at a time
-    for i in range(0, len(printable), 2):
+    for i in range(0, len(printable_chars), 2):
 
         # Assign odd indexed characters to j, evens are assigned to i
         j = i + 1
-        icon1 = printable[i]
-        icon2 = printable[j]
+        icon1 = printable_chars[i]
+        icon2 = printable_chars[j]
 
         # Run the tested function and check result
         tic_tac_toe.updatePlayerIcons(icon1, icon2)
