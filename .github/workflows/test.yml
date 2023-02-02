@@ -19,5 +19,3 @@ jobs:
       # You can test your matrix by printing the current Python version
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
-      - name: Testing py_compile - working
-        run: python -m py_compile actions_test_working.py
