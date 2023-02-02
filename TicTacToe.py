@@ -224,19 +224,26 @@ class TicTacToe:
 	##########################################################################################
 	# terminal functions
 
-	def advancedGameSettings(self, settingToChange):
+	def restartGame(self):
+		self.resetGame()
+		self.gameSettingsPrompt()
+
+	def advancedGameSettings(self, settingToChange=None):
+		if settingToChange is None:
+			settingToChange = self.userInputHandler('What setting do you want to change? ', 'settings')
+
 		match settingToChange:
 			case 'change icons':
 				print('Both player icons must only be 1 character long.')
 				player0 = 'too long'
 				while len(player0) != 1:
-					player0 = input('What do you want first move icon to be? (Traditionaly X): ')
+					player0 = self.userInputHandler('What do you want first move icon to be? (Traditionaly X): ', 'settings')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
 
 				player1 = 'too long'
 				while len(player1) != 1:
-					player1 = input('What do you want second move icon to be? (Traditionaly O): ')
+					player1 = self.userInputHandler('What do you want second move icon to be? (Traditionaly O): ', 'settings')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
 
@@ -252,7 +259,7 @@ class TicTacToe:
 		# Prompts for how many human players there will be
 		num_players = 0
 		while num_players != 1 and num_players != 2:
-			num_players = input("Enter the number of players (1 or 2): ")
+			num_players = self.userInputHandler("Enter the number of players (1 or 2): ")
 			if num_players.isnumeric():
 				num_players = int(num_players)
 			elif num_players == 'change icons':
@@ -263,8 +270,8 @@ class TicTacToe:
 			# choose the player icon
 			player_choice = self.BLANK_POS_ICON
 			while player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
-				player_choice = input(
-					f"{self.PLAYER_0_ICON}s plays first, do you want to be{self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
+				player_choice = self.userInputHandler(
+					f"{self.PLAYER_0_ICON}s plays first, do you want to be {self.PLAYER_0_ICON} or {self.PLAYER_1_ICON}? "
 				)
 				if player_choice != self.PLAYER_0_ICON and player_choice != self.PLAYER_1_ICON:
 					print("That is not a valid option, make sure to match the letter's upper/lower case.")
@@ -383,15 +390,14 @@ class TicTacToe:
 
 		return row, col
 
-	@staticmethod
-	def promptUser():
+	def promptUser(self):
 		"""Requests user input for desired move on user's turn, validates, and then returns selected space.
 
 		:return: (row, col) as the row and column of the space selected by the user for their move.
 		"""
 
 		while True:
-			choice = input("Where do you want to play? ")
+			choice = self.userInputHandler("Where do you want to play? ")
 			if len(choice) == 1 and choice.isnumeric():
 				choice = int(choice) - 1
 				row = floor(choice / 3)
@@ -400,6 +406,28 @@ class TicTacToe:
 				return row, col
 			elif choice == 'exit':
 				return -1, -1
+
+	def userInputHandler(self, prompt, exclusions=None):
+		options = {'settings': self.advancedGameSettings, 'restart': self.restartGame}
+		while True:
+			if exclusions is None:
+				exclusions = []
+			elif isinstance(exclusions, list):
+				pass
+			elif isinstance(exclusions, str):
+				exclusions = [exclusions]
+			else:
+				raise Exception(f"Variable exclusions can only be of type list or str, it is {type(exclusions)}")
+
+			selection = input(prompt)
+			if selection not in exclusions:
+				result = options.get(selection, 'pass')
+				if result != 'pass':
+					result()
+				else:
+					return selection
+			else:
+				print('You can not do that right now.')
 
 
 if __name__ == "__main__":
