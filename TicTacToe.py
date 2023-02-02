@@ -87,7 +87,7 @@ class TicTacToe:
 		:param player_icon: the icon to be put in the space (traditionally X or O).
 		"""
 
-		if player_icon in self.PLAYER_0_ICON or self.PLAYER_1_ICON:
+		if player_icon in (self.PLAYER_0_ICON, self.PLAYER_1_ICON):
 			self.board[row][col] = player_icon
 			self.checkBoard()
 		else:
