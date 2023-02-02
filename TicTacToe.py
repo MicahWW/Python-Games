@@ -101,7 +101,7 @@ class TicTacToe:
 
 	def checkBoard(self):
 		"""Checks the board for endgame scenarios, either a draw or a win by either player.
-		It then sets the game_state attribute accordingly
+		It then sets the game_state attribute accordingly.
 		"""
 
 		# check for win in rows
