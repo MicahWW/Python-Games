@@ -31,7 +31,6 @@ class TicTacToe:
 			- and an empty board.
 		"""
 
-
 		# Player Icons
 		self.BLANK_POS_ICON = " "
 		self.PLAYER_0_ICON = "X"
@@ -228,7 +227,7 @@ class TicTacToe:
 					player0 = input('What do you want first move icon to be? (Traditionaly X): ')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
-				
+
 				player1 = 'too long'
 				while len(player1) != 1:
 					player1 = input('What do you want second move icon to be? (Traditionaly O): ')
@@ -236,7 +235,6 @@ class TicTacToe:
 						print("Please enter a single character for the player icon")
 
 				self.updatePlayerIcons(player0, player1)
-				
 
 	def gameSettingsPrompt(self):
 		"""Prints messages to allow the user to select number of players then choice which icon
@@ -244,7 +242,7 @@ class TicTacToe:
 
 		:returns: a tuple of the functions to call to process the 0 and 1 player moves
 		"""
-		
+
 		# Prompts for how many human players there will be
 		num_players = 0
 		while num_players != 1 and num_players != 2:
@@ -252,8 +250,8 @@ class TicTacToe:
 			if num_players.isnumeric():
 				num_players = int(num_players)
 			elif num_players == 'change icons':
-					self.advancedGameSettings(num_players)
-		
+				self.advancedGameSettings(num_players)
+
 		# if user selected single player
 		if num_players == 1:
 			# choose the player icon
@@ -286,7 +284,7 @@ class TicTacToe:
 			os.system("color")
 
 		player_0_move, player_1_move = self.gameSettingsPrompt()
-		
+
 		print("If you wish to stop playing the game enter 'exit'.")
 		# Start of game
 		self.displayBoard()
@@ -356,7 +354,7 @@ class TicTacToe:
 
 	def userMove(self, player_icon):
 		"""Processes everything that is needed for a user to make a move, including checking if input was valid (through promptUser(), spot is free to move in, etc.)
-	
+
 		:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
 					See how player_icon argument is used in botMove(self, player_icon),
 					and how both of these functions are used in startTerminalGame(self) for details.
@@ -373,7 +371,7 @@ class TicTacToe:
 					print("That space is already taken")
 			else:
 				return row, col
-		
+
 		return row, col
 
 	@staticmethod
@@ -393,6 +391,7 @@ class TicTacToe:
 				return row, col
 			elif choice == 'exit':
 				return -1, -1
+
 
 if __name__ == "__main__":
 	TicTacToe().terminalGame()
