@@ -147,13 +147,24 @@ class TicTacToe:
 		return
 
 	def botMove(self, bot_icon):
+		"""The brains of the most unbeatable bot this side of the singularity.
+
+		:param bot_icon: either self.PLAYER_0 or self.PLAYER_1, used by the bot to distinguish user from bot.
+		:return: (row, col) as integers representing the row and column of bot's desired move.
+		"""
+
+		# Initialize valid_move as required by while loops
 		valid_move = False
+		# Initialize row and col, because it's the right thing to do
 		row, col = 0, 0
+		# Initialize not_bot_icon because who wants to read "self.PLAYER_1"
+		# and all the logic that goes into figuring out if that's even the right icon to use?
 		if bot_icon == self.PLAYER_0:
 			not_bot_icon = self.PLAYER_1
 		else:
 			not_bot_icon = self.PLAYER_0
 
+		# List of tuples containing the (row,col) of all possible win scenarios
 		win_options = [
 			[(0, 0), (0, 1), (0, 2)],
 			[(1, 0), (1, 1), (1, 2)],
