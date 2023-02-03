@@ -41,9 +41,9 @@ def test_checkValidMove_correctly_evaluates_valid_moves(tic_tac_toe):
     """
     # Initialize an empty board for the test
     tic_tac_toe.board = [
-        [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-        [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-        [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON]
+        [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+        [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+        [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS]
     ]
 
     # check that each space is a valid move
@@ -51,11 +51,11 @@ def test_checkValidMove_correctly_evaluates_valid_moves(tic_tac_toe):
         for j in range(0, 3):
             assert tic_tac_toe.checkValidMove(i, j) is True
 
-    # Initialize a full board of PLAYER_0_ICON for the test
+    # Initialize a full board of PLAYER_0 for the test
     tic_tac_toe.board = [
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON],
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON],
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON]
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0],
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0],
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0]
     ]
 
     # check that each space is not a valid move
@@ -63,11 +63,11 @@ def test_checkValidMove_correctly_evaluates_valid_moves(tic_tac_toe):
         for j in range(0, 3):
             assert tic_tac_toe.checkValidMove(i, j) is False
 
-    # Initialize a full board of PLAYER_1_ICON for the test
+    # Initialize a full board of PLAYER_1 for the test
     tic_tac_toe.board = [
-        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON],
-        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON],
-        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON]
+        [tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1],
+        [tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1],
+        [tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1]
     ]
 
     # check that each space is not a valid move
@@ -83,29 +83,29 @@ def test_updateBoard_updates_board_correctly(tic_tac_toe):
     """
     # Initialize an empty board for the test
     tic_tac_toe.board = [
-        [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-        [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-        [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON]
+        [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+        [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+        [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS]
     ]
     # Model board is manually updated in the test to make comparisons for expected results
     model_board = [
-        [" ", " ", " "],
-        [" ", " ", " "],
-        [" ", " ", " "]
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
     ]
     # Define acceptable player icons
     icons_to_test = printable_chars
     # Check functionality for each possible icon
     for char in icons_to_test:
         # Assign icon to a player icon
-        tic_tac_toe.PLAYER_0_ICON = char
+        tic_tac_toe.PLAYER_0 = char
         # Check each row and column
         for i in range(0, 3):
             for j in range(0, 3):
                 # Update model board manually to check results
-                model_board[i][j] = tic_tac_toe.PLAYER_0_ICON
+                model_board[i][j] = tic_tac_toe.PLAYER_0
                 # Update using tested function
-                tic_tac_toe.updateBoard(i, j, tic_tac_toe.PLAYER_0_ICON)
+                tic_tac_toe.updateBoard(i, j, tic_tac_toe.PLAYER_0)
                 assert tic_tac_toe.board == model_board
 
 
@@ -127,16 +127,16 @@ def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe):
     ]
     # Test for each player icon
     game_states_to_check = (
-        (tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_WINNER),
-        (tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_WINNER)
+        (tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0_WINNER),
+        (tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1_WINNER)
     )
     # Test each icon in each win scenario
     for icon, expected_winner in game_states_to_check:
         for scenario in win_options:
             tic_tac_toe.board = [
-                [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-                [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-                [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON]
+                [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+                [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+                [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS]
             ]
             for space in scenario:
                 tic_tac_toe.board[space[0]][space[1]] = icon
@@ -145,18 +145,18 @@ def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe):
 
     # Test a draw game state
     tic_tac_toe.board = [
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_1_ICON],
-        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_0_ICON],
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_1_ICON]
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_1],
+        [tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_0],
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_1]
     ]
     tic_tac_toe.checkBoard()
     assert tic_tac_toe.game_state == tic_tac_toe.DRAW_GAME
 
     # Test a GAME_IN_PROGRESS state
     tic_tac_toe.board = tic_tac_toe.board = [
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.PLAYER_1_ICON],
-        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_0_ICON],
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_1_ICON]
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.BLANK_POS, tic_tac_toe.PLAYER_1],
+        [tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_0],
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_1]
     ]
     tic_tac_toe.checkBoard()
     assert tic_tac_toe.game_state == tic_tac_toe.GAME_IN_PROGRESS
@@ -182,16 +182,16 @@ def test_bot_takes_wins(tic_tac_toe):
     # For each scenario, reset board and test
     for scenario in win_options:
         tic_tac_toe.board = [
-            [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-            [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-            [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON]
+            [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+            [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+            [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS]
         ]
         # Set up a win scenario for the bot and let it move once
         for space in (scenario[0], scenario[1]):
-            tic_tac_toe.board[space[0]][space[1]] = tic_tac_toe.PLAYER_1_ICON
-        bot_move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1_ICON)
-        tic_tac_toe.updateBoard(bot_move[0], bot_move[1], tic_tac_toe.PLAYER_1_ICON)
-        assert tic_tac_toe.board[scenario[2][0]][scenario[2][1]] == tic_tac_toe.PLAYER_1_ICON
+            tic_tac_toe.board[space[0]][space[1]] = tic_tac_toe.PLAYER_1
+        bot_move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1)
+        tic_tac_toe.updateBoard(bot_move[0], bot_move[1], tic_tac_toe.PLAYER_1)
+        assert tic_tac_toe.board[scenario[2][0]][scenario[2][1]] == tic_tac_toe.PLAYER_1
 
 
 def test_bot_blocks_wins(tic_tac_toe):
@@ -214,16 +214,16 @@ def test_bot_blocks_wins(tic_tac_toe):
     # For each scenario, reset the board and test
     for scenario in win_options:
         tic_tac_toe.board = [
-            [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-            [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON],
-            [tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.BLANK_POS_ICON]
+            [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+            [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+            [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS]
         ]
         # Set up a win scenario for the opponent and let the bot move once
         for space in (scenario[0], scenario[1]):
-            tic_tac_toe.board[space[0]][space[1]] = tic_tac_toe.PLAYER_0_ICON
-        bot_move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1_ICON)
-        tic_tac_toe.updateBoard(bot_move[0], bot_move[1], tic_tac_toe.PLAYER_1_ICON)
-        assert tic_tac_toe.board[scenario[2][0]][scenario[2][1]] == tic_tac_toe.PLAYER_1_ICON
+            tic_tac_toe.board[space[0]][space[1]] = tic_tac_toe.PLAYER_0
+        bot_move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1)
+        tic_tac_toe.updateBoard(bot_move[0], bot_move[1], tic_tac_toe.PLAYER_1)
+        assert tic_tac_toe.board[scenario[2][0]][scenario[2][1]] == tic_tac_toe.PLAYER_1
 
 
 def test_resetGame(tic_tac_toe):
@@ -234,9 +234,9 @@ def test_resetGame(tic_tac_toe):
 
     # Initialize a filled board and game state
     tic_tac_toe.board = [
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_1_ICON],
-        [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_0_ICON],
-        [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_1_ICON]
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_1],
+        [tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_0],
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_1]
     ]
     tic_tac_toe.game_state = tic_tac_toe.PLAYER_0_WINNER
 
@@ -245,9 +245,9 @@ def test_resetGame(tic_tac_toe):
 
     # Test board and game state
     assert tic_tac_toe.emptyBoard() == [
-        [" ", " ", " "],
-        [" ", " ", " "],
-        [" ", " ", " "]
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
     ]
     assert tic_tac_toe.game_state == tic_tac_toe.GAME_IN_PROGRESS
 
