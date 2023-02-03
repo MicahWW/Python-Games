@@ -1,7 +1,7 @@
 from sys import exit
-from TicTacToe import TicTacToe
+import TicTacToe
 
-games = [TicTacToe()]
+games = [TicTacToe.TicTacTerminal()]
 
 while True:
 	print(f"There are {len(games)} games...")

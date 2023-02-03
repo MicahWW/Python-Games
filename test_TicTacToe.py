@@ -9,7 +9,7 @@ def tic_tac_toe():
 
     :return: clean TicTacToe object to be used in each test.
     """
-    return TicTacToe.TicTacToe()
+    return TicTacToe.TicTacTerminal()
 
 
 def test_returns_correct_game_name(tic_tac_toe):
@@ -27,9 +27,9 @@ def test_empty_board(tic_tac_toe):
     :return:
     """
     assert tic_tac_toe.emptyBoard() == [
-        [" ", " ", " "],
-        [" ", " ", " "],
-        [" ", " ", " "]
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
     ]
 
 
@@ -110,7 +110,7 @@ def test_updateBoard_updates_board_correctly(tic_tac_toe):
 
 
 def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe):
-    """Tests that the checkBoard function correctly identifies win, draw, and no_winner states.
+    """Tests that the checkBoard function correctly identifies win, draw, and GAME_IN_PROGRESS states.
 
     :param tic_tac_toe: the TicTacToe object to be used in the test
     """
@@ -152,14 +152,14 @@ def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe):
     tic_tac_toe.checkBoard()
     assert tic_tac_toe.game_state == tic_tac_toe.DRAW_GAME
 
-    # Test a no_winner state
+    # Test a GAME_IN_PROGRESS state
     tic_tac_toe.board = tic_tac_toe.board = [
         [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.BLANK_POS_ICON, tic_tac_toe.PLAYER_1_ICON],
         [tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_1_ICON, tic_tac_toe.PLAYER_0_ICON],
         [tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_0_ICON, tic_tac_toe.PLAYER_1_ICON]
     ]
     tic_tac_toe.checkBoard()
-    assert tic_tac_toe.game_state == tic_tac_toe.NO_WINNER
+    assert tic_tac_toe.game_state == tic_tac_toe.GAME_IN_PROGRESS
 
 
 def test_bot_takes_wins(tic_tac_toe):
@@ -249,7 +249,7 @@ def test_resetGame(tic_tac_toe):
         [" ", " ", " "],
         [" ", " ", " "]
     ]
-    assert tic_tac_toe.game_state == tic_tac_toe.NO_WINNER
+    assert tic_tac_toe.game_state == tic_tac_toe.GAME_IN_PROGRESS
 
 
 def test_updatePlayerIcons_assigns_icons(tic_tac_toe):
