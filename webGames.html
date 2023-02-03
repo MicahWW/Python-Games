@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Python Games</title>
+</head>
+<body>
+
+    <div>
+        <h1 id="gameName"></h1>
+    </div>
+
+    <script defer>
+        fetch("http://127.0.0.1:5000/game_name")
+            .then((response) => response.text())
+			.then((data) => document.getElementById("gameName").innerHTML = data)
+    </script>
+</body>
+</html>
