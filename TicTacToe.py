@@ -1,7 +1,6 @@
 ﻿import random
 import os
 from math import floor
-from typing import Tuple, Callable
 
 
 ##########################################################################################
@@ -46,6 +45,9 @@ class TicTacToe:
 		self.board = self.emptyBoard()
 		self.game_state = self.GAME_IN_PROGRESS
 
+		# Initialize move history
+		self.move_history = []
+
 	@staticmethod
 	def gameName():
 		"""returns the name of the game (namely, the name "Tic-Tac-Toe").
@@ -82,11 +84,12 @@ class TicTacToe:
 
 		:param row: the row of the space to be updated.
 		:param col: the column of the space to be updated.
-		:param player_icon: the icon to be put in the space (traditionally X or O).
+		:param player_values: the icon to be put in the space (traditionally X or O).
 		"""
 
 		if player_values in (self.PLAYER_0, self.PLAYER_1, self.BLANK_POS):
 			self.board[row][col] = player_values
+			self.move_history.append((row, col))
 			self.checkBoard()
 		else:
 			err = (
@@ -144,24 +147,13 @@ class TicTacToe:
 		return
 
 	def botMove(self, bot_icon):
-		"""The brains of the most unbeatable bot this side of the singularity.
-		Okay probably not, but it should at least block easy wins.
-
-		:param bot_icon: either self.PLAYER_0 or self.PLAYER_1, used by the bot to distinguish user from bot.
-		:return: (row, col) as integers representing the row and column of bot's desired move.
-		"""
-
-		# Initialize valid_move as required by the while loop
 		valid_move = False
-		# Initialize row and col, because it's the right thing to do
 		row, col = 0, 0
-		# Initialize not_bot_icon because who wants to read "self.PLAYER_1"
-		# and all the logic that goes into figuring out if that's even the right icon to use?
 		if bot_icon == self.PLAYER_0:
 			not_bot_icon = self.PLAYER_1
 		else:
 			not_bot_icon = self.PLAYER_0
-		# List of tuples containing the (row,col) of all possible win scenarios
+
 		win_options = [
 			[(0, 0), (0, 1), (0, 2)],
 			[(1, 0), (1, 1), (1, 2)],
@@ -189,6 +181,13 @@ class TicTacToe:
 						row = i[0]
 						col = i[1]
 						return row, col
+		for option in win_options:
+			# Initialize score_keeper for reading the board for win scenarios
+			score_keeper = {self.PLAYER_0: 0, self.PLAYER_1: 0, self.BLANK_POS: 0}
+			# determine what is in each space and record with score_keeper
+			# i is the individual space in any given win scenario, i[0] is row and i[1] is col
+			for i in option:
+				score_keeper[self.board[i[0]][i[1]]] += 1
 			# if there are two opponent icons set to win and a blank space available,
 			# select the blank space to block the opponent from winning
 			if score_keeper[not_bot_icon] == 2 and score_keeper[self.BLANK_POS] == 1:
@@ -198,10 +197,79 @@ class TicTacToe:
 						col = i[1]
 						return row, col
 
-		# If the bot escapes the win-checker loop and finds no imminent win scenarios, select a random space
+		# Initialize turn counter
+		turn_counter = 9
+		for i in range(0, 3):
+			for j in range(0, 3):
+				if self.board[i][j] == self.BLANK_POS:
+					turn_counter -= 1
+
+		# Check for middle-opener edge-case
+		if bot_icon == self.PLAYER_1 and turn_counter == 1:
+			if self.board[1][1] == self.PLAYER_0:
+				while not valid_move:
+					row = random.choice((0, 2))
+					col = random.choice((0, 2))
+					valid_move = self.checkValidMove(row, col)
+				return row, col
+
+		# Check for edge-cases (that happen on turn 3)
+		if bot_icon == self.PLAYER_1 and turn_counter == 3:
+			# Check for first edge-case: see board [[X, , ], [ ,X, ], [ , ,O]]
+			# In this (or rotated) situation, bot should select a corner space
+			if self.board[1][1] == self.PLAYER_0:
+				# Check for scenario
+				if ((self.board[0][0] != self.BLANK_POS !=
+					self.board[2][2] != self.board[0][0]) or
+						(self.board[0][2] != self.BLANK_POS !=
+						self.board[2][0] != self.board[0][2])):
+					# Select an open corner space
+					while not valid_move:
+						row = random.choice((0, 2))
+						col = random.choice((0, 2))
+						valid_move = self.checkValidMove(row, col)
+					return row, col
+
+			# Check for second edge-case: see board [[ ,X, ], [ ,O, ], [X, , ]]
+			# In this scenario, bot loses if it selects (2, 1).  Avoid this (or rotated) scenarios.
+			if self.board[1][1] == bot_icon:
+				if self.board[0][1] != self.board[1][1] != self.board[2][1] != self.board[0][1]:
+					while not valid_move:
+						row = random.choice((0, 1, 2))
+						col = random.choice((0, 1, 2))
+						valid_move = self.checkValidMove(row, col)
+						if (row, col) in ((0, 1), (2, 1)):
+							valid_move = False
+					return row, col
+				elif self.board[1][0] != self.board[1][1] != self.board[1][2] != self.board[1][0]:
+					while not valid_move:
+						row = random.choice((0, 1, 2))
+						col = random.choice((0, 1, 2))
+						valid_move = self.checkValidMove(row, col)
+						if (row, col) in ((1, 0), (1, 2)):
+							valid_move = False
+					return row, col
+
+		# If the bot escapes the win-checker loop and edge-cases, select a space using criteria
+		# Explanation of criteria: imagine a tic-tac-toe board colored like checkerboard.
+		# If human player plays on white space, bot tries to play black space, or vice versa.
+		# This is implemented using an odd/even scheme of the board positions.
+		last_opponent_move = self.move_history[-1]
 		while not valid_move:
-			row = random.choice([0, 1, 2])
-			col = random.choice([0, 1, 2])
+			if turn_counter == 1 and self.board[1][1] == self.BLANK_POS:
+				row, col = (1, 1)
+			else:
+				row = random.choice((0, 1, 2))
+				if (last_opponent_move[0] + last_opponent_move[1]) % 2 == 0:
+					if row in (0, 2):
+						col = 1
+					else:
+						col = random.choice((0, 2))
+				else:
+					if row == 1:
+						col = 1
+					else:
+						col = random.choice((0, 2))
 			valid_move = self.checkValidMove(row, col)
 
 		return row, col
@@ -221,7 +289,7 @@ class TicTacTerminal(TicTacToe):
 		self.blank_pos_color = "\033[1;32m"
 		self.exit_color_code = "\033[0m"
 
-		# How the palyers are displayed
+		# How the players are displayed
 		self.PLAYER_0_ICON = 'X'
 		self.PLAYER_1_ICON = 'O'
 
@@ -235,19 +303,19 @@ class TicTacTerminal(TicTacToe):
 				print('Both player icons must only be 1 character long.')
 				player0 = 'too long'
 				while len(player0) != 1:
-					player0 = input('What do you want first move icon to be? (Traditionaly X): ')
+					player0 = input('What do you want first move icon to be? (Traditionally X): ')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
 
 				player1 = 'too long'
 				while len(player1) != 1:
-					player1 = input('What do you want second move icon to be? (Traditionaly O): ')
+					player1 = input('What do you want second move icon to be? (Traditionally O): ')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
 
 				self.updatePlayerIcons(player0, player1)
 
-	def gameSettingsPrompt(self) -> Tuple[Callable, Callable]:
+	def gameSettingsPrompt(self):
 		"""Prints messages to allow the user to select number of players then choose their icon
 		Takes no inputs
 
