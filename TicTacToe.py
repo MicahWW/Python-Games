@@ -229,14 +229,6 @@ class TicTacTerminal(TicTacToe):
 		self.PLAYER_0_ICON = player_0_icon
 		self.PLAYER_1_ICON = player_1_icon
 
-	# behind the scenes functions
-	##########################################################################################
-	# terminal functions
-
-	def restartGame(self):
-		self.resetGame()
-		self.gameSettingsPrompt()
-
 	def advancedGameSettings(self, settingToChange=None):
 		if settingToChange is None:
 			settingToChange = self.userInputHandler('What setting do you want to change? ', 'settings')
@@ -257,6 +249,8 @@ class TicTacTerminal(TicTacToe):
 						print("Please enter a single character for the player icon")
 
 				self.updatePlayerIcons(player0, player1)
+			case _:
+				raise Exception(f"Was given {settingToChange} but that doesn't exist")
 
 	def gameSettingsPrompt(self) -> Tuple[Callable, Callable]:
 		"""Prints messages to allow the user to select number of players then choose their icon
@@ -417,7 +411,7 @@ class TicTacTerminal(TicTacToe):
 				return -1, -1
 
 	def userInputHandler(self, prompt, exclusions=None):
-		options = {'settings': self.advancedGameSettings, 'restart': self.restartGame}
+		options = {'settings': self.advancedGameSettings}
 		while True:
 			if exclusions is None:
 				exclusions = []
