@@ -230,10 +230,8 @@ class TicTacToe:
 			# In this (or rotated) situation, bot should select a corner space
 			if self.board[1][1] == self.PLAYER_0:
 				# Check for scenario
-				if ((self.board[0][0] != self.BLANK_POS !=
-					self.board[2][2] != self.board[0][0]) or
-						(self.board[0][2] != self.BLANK_POS !=
-						self.board[2][0] != self.board[0][2])):
+				if (self.board[0][0] != self.BLANK_POS != self.board[2][2] != self.board[0][0]) or \
+					(self.board[0][2] != self.BLANK_POS != self.board[2][0] != self.board[0][2]):
 					# Select an open corner space
 					while not valid_move:
 						row = random.choice((0, 2))
