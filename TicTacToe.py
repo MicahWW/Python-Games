@@ -264,6 +264,7 @@ class TicTacToe:
 		# If human player plays on white space, bot tries to play black space, or vice versa.
 		# This is implemented using an odd/even scheme of the board positions.
 		last_opponent_move = self.move_history[-1]
+		escape_counter = 9
 		while not valid_move:
 			if turn_counter == 1 and self.board[1][1] == self.BLANK_POS:
 				row, col = (1, 1)
@@ -280,6 +281,14 @@ class TicTacToe:
 					else:
 						col = random.choice((0, 2))
 			valid_move = self.checkValidMove(row, col)
+
+			# It is possible that there will be only evens or only odds available;
+			# if that seems to be the case, escape the odd/even loop and take any available space.
+			escape_counter -= 1
+			if escape_counter <= 0:
+				row = random.choice((0, 1, 2))
+				col = random.choice((0, 1, 2))
+				valid_move = self.checkValidMove(row, col)
 
 		return row, col
 
