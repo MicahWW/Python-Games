@@ -1,20 +1,127 @@
 ﻿<!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang='en' xmlns='http://www.w3.org/1999/xhtml'>
 <head>
-    <meta charset="utf-8" />
+    <meta charset='utf-8' />
     <title>Python Games</title>
+
+    <style>
+		.board_cell {
+			display: inline;
+			font-size: 20px;
+		}
+
+		div.game_line {
+			outline: 1.5px;
+			outline-color: black;
+			outline-style: solid;
+			position: absolute;
+		}
+
+		div.game_line_horizontal {
+			height: 0px;
+			width: 93px;
+			left: 7px;
+		}
+
+		div.game_line_vertical {
+			height: 70px;
+			width: 0px;
+		}
+    </style>
 </head>
 <body>
 
     <div>
-        <h1 id="gameName"></h1>
+        <h1 id='gameName'></h1>
+    </div>
+
+    <div id='board' style='position: relative;'>
+        <div class='game_line game_line_vertical' style='left: 36px'></div>
+        <div class='game_line game_line_vertical' style='left: 72px'></div>
+        <div class='game_line game_line_horizontal' style='top: 23.5px'></div>
+        <div class='game_line game_line_horizontal' style='top: 47px'></div>
+
+
+        <pre class='board_cell' ; id='pos_zero'>0</pre><pre class='board_cell' ; id='pos_one'>1</pre><pre class='board_cell' ; id='pos_two'>2</pre>
+        <br />
+        <pre class='board_cell' ; id='pos_three'>3</pre> <pre class='board_cell' ; id='pos_four'>4</pre> <pre class='board_cell' ; id='pos_five'>5</pre>
+        <br />
+        <pre class='board_cell' ; id='pos_six'>6</pre> <pre class='board_cell' ; id='pos_seven'>7</pre> <pre class='board_cell' ; id='pos_eight'>8</pre>
+
     </div>
 
     <script defer>
-        fetch("http://127.0.0.1:5000/game_name")
-            .then((response) => response.text())
-			.then((data) => document.getElementById("gameName").innerHTML = data)
+        let baseURL = 'http://127.0.0.1:5000'
+        let boardURL = baseURL + '/board'
+        let gameNameURL = baseURL + '/gameName'
+        let checkMoveURL = baseURL + '/checkValidMove'
+        let updateBoardURL = baseURL + '/updateBoard'
+
+        function displayBoard() {
+            fetch(boardURL, {Method: 'GET'})
+				.then((response) => response.json())
+				.then((data) => updateScreenBoard(data))
+        }
+
+		function updateScreenBoard(board) {
+            let ids = [
+                ['pos_zero', 'pos_one', 'pos_two'],
+                ['pos_three', 'pos_four', 'pos_five'],
+                ['pos_six', 'pos_seven', 'pos_eight']];
+
+            for (let i = 0; i < board.length; i++) {
+                for (let j = 0; j < board[i].length; j++) {
+                    let value = '';
+                    if (board[i][j] == -1) {
+                        value = ' X ';
+                    } else if (board[i][j] == 0) {
+                        value = ' E ';
+                    } else {
+                        value = ' O ';
+                    }
+					document.getElementById(ids[i][j]).innerHTML = value;
+                }
+            }
+        }
+
+        document.getElementById('pos_zero').onclick = function () {
+            fetch(checkMoveURL, {
+                method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ 'row': 0, 'col': 0 })
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.valid == true) {
+                        fetch(updateBoardURL, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({ 'row': 0, 'col': 0 })
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                if (data.updated == true) {
+                                    displayBoard()
+                                } else {
+                                    // ERROR
+                                    console.log('Board didn\'t get updated')
+                                }
+                            })
+                    }
+                })
+
+        }
+
+		fetch(gameNameURL, { Method: 'GET' })
+            .then((response) => response.json())
+            .then((data) => document.getElementById('gameName').innerHTML = data)
+
+        displayBoard()
     </script>
 </body>
 </html>
