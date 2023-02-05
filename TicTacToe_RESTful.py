@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-game = TicTacToe.TicTacToe()
+game = TicTacToe.TicTacTerminal()
 
 @app.route("/gameName", methods=["GET"])
 def gameName_route():
@@ -13,28 +13,49 @@ def gameName_route():
 
 @app.route("/board", methods=["GET"])
 def currentBoard_route():
+	game.displayBoard()
 	return json.dumps(game.board)
 
 @app.route("/checkValidMove", methods=["POST"])
 def checkValidMove_route():
 	query = request.get_json()
-	row = query.get('row', -1)
-	col = query.get('col', -1)
+	row = query.get("row", "error")
+	col = query.get("col", "error")
 
-	if row == -1 or col == -1:
-		return {'valid': False}
-	return {'valid': game.checkValidMove(row, col)}
+	if row == "error" or col == "error":
+		print("Move was invalid, recieved:")
+		print(f"row:\t{row}\ncol:\t{col}")
+		print(f"query:\t{query}")
+		return {"valid": False}
+	return {"valid": game.checkValidMove(row, col)}
 
 @app.route("/updateBoard", methods=["POST"])
 def updateBoard_route():
 	query = request.get_json()
-	row = query.get('row', -1)
-	col = query.get('col', -1)
+	row = query.get("row", "error")
+	col = query.get("col", "error")
+	player = query.get("player", "error")
 
-	if row == -1 or col == -1:
-		return {'updated': False}
-	game.updateBoard(row, col, -1)
-	return {'updated': True}
+	if row == "error" or col == "error" or player == "error":
+		print("Move was invalid, recieved:")
+		print(f"row:\t{row}\ncol:\t{col}\nplayer:\t{player}")
+		print(f"query:\t{query}")
+		return {"updated": False}
+	game.updateBoard(row, col, player)
+	return {"updated": True}
+
+@app.route("/botMove", methods=["POST"])
+def botMove_route():
+	query = request.get_json()
+	player = query.get("player", "error")
+
+	if player == "error":
+		print(f"player:\t{player}")
+		print(f"query:\t{query}")
+		return {"valid: False"}
+	row, col = game.botMove(player)
+	print(f"botmove: {row}\t{col}")
+	return {"valid": True, "row": row, "col": col}
 
 if __name__ == "__main__":
 	app.run()

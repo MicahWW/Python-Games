@@ -56,7 +56,8 @@
         let boardURL = baseURL + '/board'
         let gameNameURL = baseURL + '/gameName'
         let checkMoveURL = baseURL + '/checkValidMove'
-        let updateBoardURL = baseURL + '/updateBoard'
+		let updateBoardURL = baseURL + '/updateBoard'
+		let botMoveURL = baseURL + '/botMove'
 
         function displayBoard() {
             fetch(boardURL, {Method: 'GET'})
@@ -83,39 +84,98 @@
 					document.getElementById(ids[i][j]).innerHTML = value;
                 }
             }
-        }
+		}
 
-        document.getElementById('pos_zero').onclick = function () {
-            fetch(checkMoveURL, {
-                method: 'POST',
+		function updateBoard(row, col, player) {
+			fetch(updateBoardURL, {
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ 'row': 0, 'col': 0 })
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.valid == true) {
-                        fetch(updateBoardURL, {
+				body: JSON.stringify({ 'row': row, 'col': col, 'player': player })
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					// error check if it did get updated
+					if (data.updated == true) {
+						displayBoard()
+					} else {
+						// ERROR
+						console.log('Board didn\'t get updated')
+					}
+				})
+		}
+
+		function checkAndUpdate(row, col) {
+			fetch(checkMoveURL, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ 'row': row, 'col': col })
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					// If a valid move request to update the board
+					if (data.valid == true) {
+						updateBoard(row, col, -1);
+						// bot move
+						fetch(botMoveURL, {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json'
 							},
-							body: JSON.stringify({ 'row': 0, 'col': 0 })
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                if (data.updated == true) {
-                                    displayBoard()
-                                } else {
-                                    // ERROR
-                                    console.log('Board didn\'t get updated')
-                                }
-                            })
-                    }
-                })
-
+							body: JSON.stringify({ 'player': 1 })
+						})
+							.then((response) => response.json())
+							.then((data) => {
+								if (data.valid == true) {
+									updateBoard(data.row, data.col, 1);
+								} else {
+									console.log('Data was not valid')
+								}
+							})
+					} else {
+						console.log('Data was not valid')
+					}
+				})
         }
+
+		document.getElementById('pos_zero').onclick = function () {
+			checkAndUpdate(0, 0);
+		}
+
+		document.getElementById('pos_one').onclick = function () {
+			checkAndUpdate(0, 1);
+		}
+
+		document.getElementById('pos_two').onclick = function () {
+			checkAndUpdate(0, 2);
+		}
+
+		document.getElementById('pos_three').onclick = function () {
+			checkAndUpdate(1, 0);
+		}
+
+		document.getElementById('pos_four').onclick = function () {
+			checkAndUpdate(1, 1);
+		}
+
+		document.getElementById('pos_five').onclick = function () {
+			checkAndUpdate(1, 2);
+		}
+
+		document.getElementById('pos_six').onclick = function () {
+			checkAndUpdate(2, 0);
+		}
+
+		document.getElementById('pos_seven').onclick = function () {
+			checkAndUpdate(2, 1);
+		}
+
+		document.getElementById('pos_eight').onclick = function () {
+			checkAndUpdate(2, 2);
+		}
 
 		fetch(gameNameURL, { Method: 'GET' })
             .then((response) => response.json())
