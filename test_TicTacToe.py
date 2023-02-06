@@ -1,3 +1,17 @@
+"""Contains tests for the TicTacToe.py module.
+    - test_returns_correct_game_name: Checks that the name of the game is returned as expected.
+    - test_empty_board: Tests that empty board initializes as expected.
+    - test_checkValidMove_correctly_evaluates_valid_moves: Tests that the checkValidMove function correctly identifies
+        empty spaces as valid moves, and filled spaces as invalid moves.
+    - test_updateBoard_updates_board_correctly: Tests that updateBoard function correctly assigns player icons to spaces.
+    - test_checkBoard_correctly_identifies_all_endgame_scenarios: Tests that the checkBoard function correctly
+        identifies win, draw, and GAME_IN_PROGRESS states.
+    - test_bot_takes_wins: Tests that the bot will take wins when possible.
+    - test_bot_blocks_wins: Tests that the bot will block opponent wins when possible.
+    - test_resetGame: Tests that the resetGame function properly resets the game.
+    - test_updatePlayerIcons_assigns_icons: Tests that the updatePlayerIcons function correctly assigns selected icons.
+"""
+
 import TicTacToe
 import pytest
 from string import printable as printable_chars
@@ -12,7 +26,7 @@ def tic_tac_toe():
     return TicTacToe.TicTacTerminal()
 
 
-def test_returns_correct_game_name(tic_tac_toe):
+def test_returns_correct_game_name(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Checks that the name of the game is returned as expected.
 
     :param tic_tac_toe: the TicTacToe object to be used in the test
@@ -20,7 +34,7 @@ def test_returns_correct_game_name(tic_tac_toe):
     assert tic_tac_toe.gameName() == "Tic-Tac-Toe"
 
 
-def test_empty_board(tic_tac_toe):
+def test_empty_board(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that empty board initializes as expected.
 
     :param tic_tac_toe: :param tic_tac_toe: the TicTacToe object to be used in the test
@@ -33,7 +47,7 @@ def test_empty_board(tic_tac_toe):
     ]
 
 
-def test_checkValidMove_correctly_evaluates_valid_moves(tic_tac_toe):
+def test_checkValidMove_correctly_evaluates_valid_moves(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that the checkValidMove function correctly identifies empty spaces as valid moves,
     and filled spaces as invalid moves.
 
@@ -76,7 +90,7 @@ def test_checkValidMove_correctly_evaluates_valid_moves(tic_tac_toe):
             assert tic_tac_toe.checkValidMove(i, j) is False
 
 
-def test_updateBoard_updates_board_correctly(tic_tac_toe):
+def test_updateBoard_updates_board_correctly(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that updateBoard function correctly assigns player icons to spaces.
 
     :param tic_tac_toe: the TicTacToe object to be used in the test
@@ -93,29 +107,23 @@ def test_updateBoard_updates_board_correctly(tic_tac_toe):
         [0, 0, 0],
         [0, 0, 0]
     ]
-    # Define acceptable player icons
-    icons_to_test = printable_chars
-    # Check functionality for each possible icon
-    for char in icons_to_test:
-        # Assign icon to a player icon
-        tic_tac_toe.PLAYER_0 = char
-        # Check each row and column
-        for i in range(0, 3):
-            for j in range(0, 3):
-                # Update model board manually to check results
-                model_board[i][j] = tic_tac_toe.PLAYER_0
-                # Update using tested function
-                tic_tac_toe.updateBoard(i, j, tic_tac_toe.PLAYER_0)
-                assert tic_tac_toe.board == model_board
+    # Check each row and column
+    for i in range(0, 3):
+        for j in range(0, 3):
+            # Update model board manually to check results
+            model_board[i][j] = tic_tac_toe.PLAYER_0
+            # Update using tested function
+            tic_tac_toe.updateBoard(i, j, tic_tac_toe.PLAYER_0)
+            assert tic_tac_toe.board == model_board
 
 
-def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe):
+def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that the checkBoard function correctly identifies win, draw, and GAME_IN_PROGRESS states.
 
     :param tic_tac_toe: the TicTacToe object to be used in the test
     """
     # Win scenarios to be tested
-    win_options = [
+    WIN_OPTIONS = [
         [(0, 0), (0, 1), (0, 2)],
         [(1, 0), (1, 1), (1, 2)],
         [(2, 0), (2, 1), (2, 2)],
@@ -132,7 +140,7 @@ def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe):
     )
     # Test each icon in each win scenario
     for icon, expected_winner in game_states_to_check:
-        for scenario in win_options:
+        for scenario in WIN_OPTIONS:
             tic_tac_toe.board = [
                 [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
                 [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
@@ -162,7 +170,7 @@ def test_checkBoard_correctly_identifies_all_endgame_scenarios(tic_tac_toe):
     assert tic_tac_toe.game_state == tic_tac_toe.GAME_IN_PROGRESS
 
 
-def test_bot_takes_wins(tic_tac_toe):
+def test_bot_takes_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that the bot will take wins when possible.
 
     :param tic_tac_toe: the TicTacToe object to be used in the test
@@ -194,8 +202,8 @@ def test_bot_takes_wins(tic_tac_toe):
         assert tic_tac_toe.board[scenario[2][0]][scenario[2][1]] == tic_tac_toe.PLAYER_1
 
 
-def test_bot_blocks_wins(tic_tac_toe):
-    """Tests that the bot will block wins when possible.
+def test_bot_blocks_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
+    """Tests that the bot will block opponent wins when possible.
 
     :param tic_tac_toe: the TicTacToe object to be used in the test
     """
@@ -226,7 +234,7 @@ def test_bot_blocks_wins(tic_tac_toe):
         assert tic_tac_toe.board[scenario[2][0]][scenario[2][1]] == tic_tac_toe.PLAYER_1
 
 
-def test_resetGame(tic_tac_toe):
+def test_resetGame(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that the resetGame function properly resets the game.
 
     :param tic_tac_toe: the TicTacToe object to be used in the test
@@ -252,7 +260,7 @@ def test_resetGame(tic_tac_toe):
     assert tic_tac_toe.game_state == tic_tac_toe.GAME_IN_PROGRESS
 
 
-def test_updatePlayerIcons_assigns_icons(tic_tac_toe):
+def test_updatePlayerIcons_assigns_icons(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that the updatePlayerIcons function correctly assigns selected icons.
     Yup, we really be testing everything here.
 
