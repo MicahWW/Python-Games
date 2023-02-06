@@ -1,34 +1,43 @@
-﻿import random
+﻿"""Contains the classes to run tic-tac-toe games.
+	- TicTacToe: master class to be used for backend on any platform.
+	- TicTacTerminal: child class of TicTacToe to be used for terminal-based games.
+"""
+
+import random
 import os
 from math import floor
+from typing import Tuple, Optional, Union
 
 
 ##########################################################################################
 
 class TicTacToe:
-	"""Contains the objects and functions for running the TicTacToe game, to be called from main.py.
+	"""Contains the backend methods for running the TicTacToe game, to be inherited by platform-specific child classes.
+	Built to work with terminal, API, GUI, and any other platform.
 
-	Included functions:
+	Included methods:
 		- __init__(self)
 		- gameName(self) - returns the name of the game (namely, the name "Tic-Tac-Toe")
 		- emptyBoard(self) - generates an empty board
 		- checkValidMove(self, row, col) - returns "True" if a move is valid
 		- updateBoard(self, row, col, player_icon) - assigns player icon to a given space
 		- checkBoard(self) - determines if the game has been won or drawn
-		- startTerminalGame(self) - outputs prompts and info to user and calls game functions
-		- displayBoard(self) - prints the board to the console for the user to see
-		- displayResult(self, game_state) - prints a win or draw message
-		- userMove(self, player_icon) - takes user input to update the board
-		- promptUser() - asks for and processes user input
 		- botMove(self, player_icon) - brains of the bot for single-player mode
+		- resetGame(self) - resets the board and game state, typically at the end of a game
 	"""
 
-	def __init__(self):
-		"""
-		Initializes TicTacToe object with
-			- player icons (traditionally X and O)
-			- game states (a continue/no-winner state, one win state for each player, and a draw state)
-			- and an empty board.
+	def __init__(self) -> None:
+		"""Initializes the attributes for a TicTacToe game.
+
+		Initializes TicTacToe instance with:
+			- the player values, in hex codes
+			- the available game states, in hex codes, including:
+				- a game-in-progress state
+				- one win state for each player
+				- a draw state
+			- an empty board (using emptyBoard method)
+			- the beginning game state (game in progress)
+			- the move history list (empty at start)
 		"""
 
 		# Player values
@@ -49,14 +58,14 @@ class TicTacToe:
 		self.move_history = []
 
 	@staticmethod
-	def gameName():
+	def gameName() -> str:
 		"""returns the name of the game (namely, the name "Tic-Tac-Toe").
 		:return: a string containing the name of the game.
 		"""
 
 		return "Tic-Tac-Toe"
 
-	def emptyBoard(self):
+	def emptyBoard(self) -> list:
 		"""Creates an empty board for the start of a new game.
 
 		:return: an empty self.board object.
@@ -68,8 +77,8 @@ class TicTacToe:
 			[self.BLANK_POS, self.BLANK_POS, self.BLANK_POS]
 		]
 
-	def checkValidMove(self, row, col):
-		"""Determines if a given move is allowed, then returns a boolean (True for valid moves, False for invalid moves).
+	def checkValidMove(self, row: int, col: int) -> bool:
+		"""Determines if a given move is allowed, then returns a boolean (True for valid, False for invalid).
 
 		:param row: the row of the space to be checked.
 		:param col: the column of the space to be checked.
@@ -78,30 +87,40 @@ class TicTacToe:
 
 		return self.board[row][col] == self.BLANK_POS
 
-	def updateBoard(self, row, col, player_values):
-		"""Updates the board by assigning a player_icon to a given space, before doing so checks if a valid icon
-		Does not return anything; assigns directly to the self.board object.
+	def updateBoard(self, row: int, col: int, player_value: int) -> None:
+		"""Updates the board and move history with new moves.
+
+		Checks if given player_value is valid (including assigning a blank space),
+		assigns player_value to position on board,
+		appends move to move_history,
+		and checks for wins.
+
+		Makes no return.
 
 		:param row: the row of the space to be updated.
 		:param col: the column of the space to be updated.
-		:param player_values: the icon to be put in the space (traditionally X or O).
+		:param player_value: the icon to be put in the space (traditionally X, 0, or blank).
 		"""
 
-		if player_values in (self.PLAYER_0, self.PLAYER_1, self.BLANK_POS):
-			self.board[row][col] = player_values
+		# Check that the passed player_value is a valid value
+		if player_value in (self.PLAYER_0, self.PLAYER_1, self.BLANK_POS):
+			# If value is valid, update board and move history, then check for a win
+			self.board[row][col] = player_value
 			self.move_history.append((row, col))
 			self.checkBoard()
+		# If value is not valid, return an error
 		else:
 			err = (
-				f"Tried to update the board with '{player_values}' but the only choices are "
+				f"Tried to update the board with '{player_value}' but the only choices are "
 				f"'{self.BLANK_POS}', '{self.PLAYER_0}', and '{self.PLAYER_1}'."
 			)
 
 			raise RuntimeError(err)
 
-	def checkBoard(self):
-		"""Checks the board for endgame scenarios, either a draw or a win by either player.
+	def checkBoard(self) -> None:
+		"""Checks the board for endgame scenarios; either a draw, or a win by either player.
 		It then sets the game_state attribute accordingly.
+		Takes no arguments and makes no return.
 		"""
 
 		# check for win in rows
@@ -146,8 +165,9 @@ class TicTacToe:
 		self.game_state = self.DRAW_GAME
 		return
 
-	def botMove(self, bot_icon):
+	def botMove(self, bot_icon: int) -> Tuple[int, int]:
 		"""The brains of the most unbeatable bot this side of the singularity.
+		Well, at least, it's pretty good now.  Still room for improvement.
 
 		:param bot_icon: either self.PLAYER_0 or self.PLAYER_1, used by the bot to distinguish user from bot.
 		:return: (row, col) as integers representing the row and column of bot's desired move.
@@ -165,7 +185,7 @@ class TicTacToe:
 			not_bot_icon = self.PLAYER_0
 
 		# List of tuples containing the (row,col) of all possible win scenarios
-		win_options = [
+		WIN_OPTIONS = [
 			[(0, 0), (0, 1), (0, 2)],
 			[(1, 0), (1, 1), (1, 2)],
 			[(2, 0), (2, 1), (2, 2)],
@@ -176,8 +196,8 @@ class TicTacToe:
 			[(0, 2), (1, 1), (2, 0)]
 		]
 
-		# check win scenarios by looping through win_options list
-		for option in win_options:
+		# check bot win scenarios by looping through WIN_OPTIONS list
+		for option in WIN_OPTIONS:
 			# Initialize score_keeper for reading the board for win scenarios
 			score_keeper = {self.PLAYER_0: 0, self.PLAYER_1: 0, self.BLANK_POS: 0}
 			# determine what is in each space and record with score_keeper
@@ -192,7 +212,8 @@ class TicTacToe:
 						row = i[0]
 						col = i[1]
 						return row, col
-		for option in win_options:
+		# check for bot loss scenarios by looping through WIN_OPTIONS list
+		for option in WIN_OPTIONS:
 			# Initialize score_keeper for reading the board for win scenarios
 			score_keeper = {self.PLAYER_0: 0, self.PLAYER_1: 0, self.BLANK_POS: 0}
 			# determine what is in each space and record with score_keeper
@@ -208,15 +229,8 @@ class TicTacToe:
 						col = i[1]
 						return row, col
 
-		# Initialize turn counter
-		turn_counter = 9
-		for i in range(0, 3):
-			for j in range(0, 3):
-				if self.board[i][j] == self.BLANK_POS:
-					turn_counter -= 1
-
 		# Check for middle-opener edge-case
-		if bot_icon == self.PLAYER_1 and turn_counter == 1:
+		if bot_icon == self.PLAYER_1 and len(self.move_history) == 1:
 			if self.board[1][1] == self.PLAYER_0:
 				while not valid_move:
 					row = random.choice((0, 2))
@@ -225,7 +239,7 @@ class TicTacToe:
 				return row, col
 
 		# Check for edge-cases (that happen on turn 3)
-		if bot_icon == self.PLAYER_1 and turn_counter == 3:
+		if bot_icon == self.PLAYER_1 and len(self.move_history) == 3:
 			# Check for first edge-case: see board [[X, , ], [ ,X, ], [ , ,O]]
 			# In this (or rotated) situation, bot should select a corner space
 			if self.board[1][1] == self.PLAYER_0:
@@ -264,12 +278,16 @@ class TicTacToe:
 		# If human player plays on white space, bot tries to play black space, or vice versa.
 		# This is implemented using an odd/even scheme of the board positions.
 		last_opponent_move = self.move_history[-1]
+		# escape_counter prevents infinite loops if the above criteria cannot be followed
+		# (likely due to a nearly-filled board)
 		escape_counter = 9
 		while not valid_move:
-			if turn_counter == 1 and self.board[1][1] == self.BLANK_POS:
+			# Prefer the center space on 2nd move if available
+			if len(self.move_history) == 1 and self.board[1][1] == self.BLANK_POS:
 				row, col = (1, 1)
 			else:
 				row = random.choice((0, 1, 2))
+				# check if opponent moved to "even" or "odd" space and counter appropriately
 				if (last_opponent_move[0] + last_opponent_move[1]) % 2 == 0:
 					if row in (0, 2):
 						col = 1
@@ -292,9 +310,9 @@ class TicTacToe:
 
 		return row, col
 
-	def resetGame(self):
-		"""Takes the necessary game attributes and resets them to their beginning state
-		Does not take in anything or return anything
+	def resetGame(self) -> None:
+		"""Resets the board and game state, typically at the end of a game.
+		Takes no arguments and makes no return.
 		"""
 
 		self.board = self.emptyBoard()
@@ -302,8 +320,35 @@ class TicTacToe:
 
 
 class TicTacTerminal(TicTacToe):
-	def __init__(self):
+	"""Contains methods specialized for playing tic-tac-toe games in the terminal.  Inherits from TicTacToe class.
+
+	Included methods:
+		- __init__(self)
+		- updatePlayerIcons(self, player_0_icon, player_1_icon): Assigns custom player icons.
+		- advancedGameSettings(self, setting_to_change=None): Allows user to change additional game settings.
+		- gameSettingsPrompt(self): Prints messages to allow the user to select number of players and choose icons.
+		- terminalGame(self): Starts a TicTacToe game in the terminal and calls supporting methods.
+		- displayBoard(self): Prints the board for the user to see.
+		- displayResult(self): Checks the game_state and displays how the game ended.
+		- userMove(self, player_icon): Processes everything that is needed for a user to make a move.
+		- promptUser(self): Connects userMove and userInputHandler to prompt for and accept user input.
+		- userInputHandler(self, prompt, exclusions=None): Allows user to select special options from any input point;
+			otherwise behaves like built-in input function.
+	"""
+
+	def __init__(self) -> None:
+		"""Initializes additional attributes for a TicTacToe game in the terminal.
+
+		Initializes the TicTacTerminal instance with:
+			- inherited attributes from TicTacToe parent class
+			- colors for the board
+			- default player icons
+			- default move structure (user-first single player, likely overwritten in gameSettingsPrompt)
+		"""
+
 		TicTacToe.__init__(self)
+
+		# Colors for the board
 		self.blank_pos_color = "\033[1;32m"
 		self.exit_color_code = "\033[0m"
 
@@ -311,39 +356,58 @@ class TicTacTerminal(TicTacToe):
 		self.PLAYER_0_ICON = 'X'
 		self.PLAYER_1_ICON = 'O'
 
-	def updatePlayerIcons(self, player_0_icon, player_1_icon):
+		# Default move structure (user-first single player)
+		self.player_0_move = self.userMove
+		self.player_1_move = self.botMove
+
+	def updatePlayerIcons(self, player_0_icon: str, player_1_icon: str) -> None:
+		"""Assigns custom player icons to self.PLAYER_0_ICON and self.PLAYER_1_ICON.
+		Makes no return.
+
+		:param player_0_icon: The character to be assigned as the player 0 icon.
+		:param player_1_icon: The character to be assigned as the player 1 icon.
+		"""
 		self.PLAYER_0_ICON = player_0_icon
 		self.PLAYER_1_ICON = player_1_icon
 
-	def advancedGameSettings(self, settingToChange=None):
-		if settingToChange is None:
-			settingToChange = self.userInputHandler('What setting do you want to change? ', 'settings')
+	def advancedGameSettings(self, setting_to_change: Optional[str] = None) -> None:
+		"""Allows user to change additional game settings.
 
-		match settingToChange:
+		Allows for changing:
+			- player icons
+			- actually that's it for now
+			- it just seemed like a good idea to start this format for later when there are more options
+
+		Makes no return.
+
+		:param setting_to_change: specifies what the user would like to change.
+		"""
+		if setting_to_change is None:
+			setting_to_change = self.userInputHandler('What setting do you want to change? ', 'settings')
+
+		match setting_to_change:
 			case 'change icons':
 				print('Both player icons must only be 1 character long.')
 				player0 = 'too long'
 				while len(player0) != 1:
 
-					player0 = self.userInputHandler('What do you want first move icon to be? (Traditionaly X): ', 'settings')
+					player0 = self.userInputHandler('What do you want first move icon to be? (Traditionally X): ', 'settings')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
 
 				player1 = 'too long'
 				while len(player1) != 1:
-					player1 = self.userInputHandler('What do you want second move icon to be? (Traditionaly O): ', 'settings')
+					player1 = self.userInputHandler('What do you want second move icon to be? (Traditionally O): ', 'settings')
 					if len(player0) != 1:
 						print("Please enter a single character for the player icon")
 
 				self.updatePlayerIcons(player0, player1)
 			case _:
-				raise Exception(f"Was given {settingToChange} but that doesn't exist")
+				raise Exception(f"Was given {setting_to_change} but that doesn't exist")
 
-	def gameSettingsPrompt(self):
-		"""Prints messages to allow the user to select number of players then choose their icon
-		Takes no inputs
-
-		:returns: a tuple of the functions to process the 0 and 1 player moves
+	def gameSettingsPrompt(self) -> None:
+		"""Prints messages to allow the user to select number of players and choose icons.
+		Takes no arguments and makes no return.
 		"""
 
 		# Prompts for how many human players there will be
@@ -379,14 +443,16 @@ class TicTacTerminal(TicTacToe):
 			self.player_0_move = self.userMove
 			self.player_1_move = self.userMove
 
-	def terminalGame(self):
-		"""Starts a TicTacToe game in the terminal and calls supporting functions.
-		Takes no inputs and makes no return.
+	def terminalGame(self) -> None:
+		"""Starts a TicTacToe game in the terminal and calls supporting methods.
+		Takes no arguments and makes no return.
 		"""
 
+		# Enable color on Windows terminals
 		if os.name == "nt":
 			os.system("color")
 
+		# Set up the game
 		self.gameSettingsPrompt()
 
 		print("If you wish to stop playing the game enter 'exit'.")
@@ -407,31 +473,35 @@ class TicTacTerminal(TicTacToe):
 			self.displayBoard()
 			if self.game_state != self.GAME_IN_PROGRESS: break  # noqa: E701
 
+		# End of game; display winner/draw and reset
 		self.displayResult()
 		self.resetGame()
 
-	def displayBoard(self):
+	def displayBoard(self) -> None:
 		"""Prints the board for the user to see.
 
-		Takes no arguments and gives no return;
+		Takes no arguments and makes no return.
 		rather, calls the self.board object directly and prints directly to console.
 		"""
 
+		# Ensure margin with text by beginning with newline
 		result = "\n"
 		for i in range(0, 9):
 			row = floor(i / 3)
 			col = i % 3
+			# First column, requires tab indent to create margin with edge of window
 			if i in (0, 3, 6):
 				if self.board[row][col] != self.BLANK_POS:
 					result += f"\t {self.PLAYER_0_ICON if self.board[row][col] == self.PLAYER_0 else self.PLAYER_1_ICON} ║"
 				else:
 					result += f"\t{self.blank_pos_color} {i + 1} {self.exit_color_code}║"
+			# Second column, requires only a space on each side of icon plus right-side seperator
 			elif i in (1, 4, 7):
 				if self.board[row][col] != self.BLANK_POS:
 					result += f" {self.PLAYER_0_ICON if self.board[row][col] == self.PLAYER_0 else self.PLAYER_1_ICON} ║"
 				else:
 					result += f"{self.blank_pos_color} {i + 1} {self.exit_color_code}║"
-
+			# Third column, requires vertical seperator (only on 1st and 2nd rows)
 			elif i in (2, 5, 8):
 				if self.board[row][col] != self.BLANK_POS:
 					result += f" {self.PLAYER_0_ICON if self.board[row][col] == self.PLAYER_0 else self.PLAYER_1_ICON}\n"
@@ -442,9 +512,9 @@ class TicTacTerminal(TicTacToe):
 
 		print(result)
 
-	def displayResult(self):
+	def displayResult(self) -> None:
 		"""Checks the game_state and displays how the game ended.
-		It takes in nothing and returns nothing
+		Takes no arguments and makes no return.
 		"""
 
 		if self.game_state == self.PLAYER_0_WINNER:
@@ -457,49 +527,73 @@ class TicTacTerminal(TicTacToe):
 			# for no winner
 			pass
 
-	def userMove(self, player_icon):
+	def userMove(self, player_icon: Optional[int]) -> Tuple[int, int]:
 		"""Processes everything that is needed for a user to make a move,
-		including checking if input was valid (through promptUser(), spot is free to move in, etc.)
+		including checking if input was valid (through promptUser, checkValidMove, etc.)
 
 		:param player_icon: The player_icon is not used in userMove but is necessary to avoid bugs with botMove.
-					See how player_icon argument is used in botMove(self, player_icon),
-					and how both of these functions are used in startTerminalGame(self) for details.
+					See how player_icon argument is used in the botMove method,
+					and how both of these methods are used in the terminalGame method for details.
 		"""
 
+		# Initialize valid_move as required by while loop
 		valid_move = False
+		# Initialize row and col, because it's the right thing to do
 		row, col = 0, 0
 
 		while not valid_move:
+			# Allow user to select desired move
 			row, col = self.promptUser()
+
+			# Check for special inputs
+			# row == -1 and col == -1 ends game immediately
 			if row != -1 and col != -1:
 				valid_move = self.checkValidMove(row, col)
 				if not valid_move:
 					print("That space is already taken")
 			else:
+				# return (-1, -1) to end game
 				return row, col
 
 		return row, col
 
-	def promptUser(self):
-		"""Requests user input for desired move on user's turn, validates, and then returns selected space.
+	def promptUser(self) -> Tuple[int, int]:
+		"""Connects userMove and userInputHandler to prompt for and accept user input.
+
+		Requests user input for desired move on user's turn (via userInputHandler),
+		validates that input is a single numeric character,
+		converts 9-board format input to 3x3-board format,
+		and then returns selected space to caller (usually userMove method).
 
 		:return: (row, col) as the row and column of the space selected by the user for their move.
 		"""
 
 		while True:
 			choice = self.userInputHandler("Where do you want to play? ")
+			# validate: is single numeric character
 			if len(choice) == 1 and choice.isnumeric():
+				# convert from 1-9 digits as shown to user (see displayBoard)
+				# to zero-indexed 3x3 format used by the rest of the program
 				choice = int(choice) - 1
 				row = floor(choice / 3)
 				col = choice % 3
 
 				return row, col
+			# if user inputs "exit", return a special tuple to end the game
 			elif choice == 'exit':
 				return -1, -1
 
-	def userInputHandler(self, prompt, exclusions=None):
+	def userInputHandler(self, prompt: str, exclusions: Union[list, str] = None) -> str:
+		"""Allows user to select special options from any input point; otherwise behaves like built-in input function.
+
+		:param prompt: string for the user to see, same as with built-in input(prompt) function
+		:param exclusions: options the user is not allowed to select
+		:return: user input as a string (in special cases does not return but rather runs a callable)
+		"""
+		# Special options available to the user
 		options = {'settings': self.advancedGameSettings}
 		while True:
+			# Ensure exclusions is of type List
 			if exclusions is None:
 				exclusions = []
 			elif isinstance(exclusions, list):
@@ -509,13 +603,18 @@ class TicTacTerminal(TicTacToe):
 			else:
 				raise Exception(f"Variable exclusions can only be of type list or str, it is {type(exclusions)}")
 
+			# prompt user for input
 			selection = input(prompt)
 			if selection not in exclusions:
+				# check if input is a special option
 				result = options.get(selection, 'pass')
+				# if special option, run related callable (ex self.advancedGameSettings)
 				if result != 'pass':
 					result()
+				# if not special case, return input as string
 				else:
 					return selection
+			# user selects a blocked option (ex "settings" from within settings)
 			else:
 				print('You can not do that right now.')
 
