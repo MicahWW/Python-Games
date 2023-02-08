@@ -357,6 +357,7 @@ class CheckersTerminal(Checkers):
         # at the end of the game, reset all and await instructions from main!
         self.resetGame()
 
+
 # ... unless of course this IS main, in which case, just play the game once
 if __name__ == "__main__":
     CheckersTerminal().terminalGame()
