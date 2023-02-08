@@ -53,22 +53,22 @@ class Checkers:
         """
 
         return [
-            [self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2,
-             self.UNREACHABLE_SPACE, self.PLAYER_2],
-            [self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2,
-             self.UNREACHABLE_SPACE],
-            [self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2,
-             self.UNREACHABLE_SPACE, self.PLAYER_2],
-            [self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE,
-             self.BLANK_POS, self.UNREACHABLE_SPACE],
-            [self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS,
-             self.UNREACHABLE_SPACE, self.BLANK_POS],
-            [self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1,
-             self.UNREACHABLE_SPACE],
-            [self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1,
-             self.UNREACHABLE_SPACE, self.PLAYER_1],
-            [self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1,
-             self.UNREACHABLE_SPACE]
+            [self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2,
+             self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2],
+            [self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE,
+             self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE],
+            [self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2,
+             self.UNREACHABLE_SPACE, self.PLAYER_2, self.UNREACHABLE_SPACE, self.PLAYER_2],
+            [self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE,
+             self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE],
+            [self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS,
+             self.UNREACHABLE_SPACE, self.BLANK_POS, self.UNREACHABLE_SPACE, self.BLANK_POS],
+            [self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE,
+             self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE],
+            [self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1,
+             self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1],
+            [self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE,
+             self.PLAYER_1, self.UNREACHABLE_SPACE, self.PLAYER_1, self.UNREACHABLE_SPACE]
         ]
 
     def checkValidMove(self, piece_col, piece_row, move_col, move_row, player_value) -> bool:
