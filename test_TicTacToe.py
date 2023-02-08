@@ -294,6 +294,7 @@ def test_bot_avoids_double_middle_trap(tic_tac_toe):
         [(2, 1), (1, 1), (1, 0), (0, 2)],
         [(2, 1), (0, 2), (1, 0), (1, 1)]
     ]
+    # Run several times to account for randomness in bot decisions
     for _ in range(0, 10):
         for scenario in scenarios_to_check:
             # Initialize empty board
@@ -304,7 +305,9 @@ def test_bot_avoids_double_middle_trap(tic_tac_toe):
             tic_tac_toe.updateBoard(scenario[2][0], scenario[2][1], tic_tac_toe.PLAYER_0)
             # let the bot move once
             move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1)
+            # move should NOT be the center
             assert move != (1, 1)
+            # move SHOULD be a corner (besides the trap corner, see next assert)
             assert (move[0] + move[1]) % 2 == 0
             tic_tac_toe.updateBoard(move[0], move[1], tic_tac_toe.PLAYER_1)
             # check that the bot successfully avoided the trap
