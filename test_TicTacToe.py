@@ -279,3 +279,34 @@ def test_updatePlayerIcons_assigns_icons(tic_tac_toe: TicTacToe.TicTacTerminal):
         tic_tac_toe.updatePlayerIcons(icon1, icon2)
         assert tic_tac_toe.PLAYER_0_ICON == icon1
         assert tic_tac_toe.PLAYER_1_ICON == icon2
+
+
+def test_bot_avoids_double_middle_trap(tic_tac_toe):
+    # cases that can trap the bot into a loss,
+    # in the format (move1, move2, move3, move_to_avoid)
+    scenarios_to_check = [
+        [(0, 1), (1, 1), (1, 0), (2, 2)],
+        [(0, 1), (2, 2), (1, 0), (1, 1)],
+        [(0, 1), (1, 1), (1, 2), (2, 0)],
+        [(0, 1), (2, 0), (1, 2), (1, 1)],
+        [(2, 1), (1, 1), (1, 2), (0, 0)],
+        [(2, 1), (0, 0), (1, 2), (1, 1)],
+        [(2, 1), (1, 1), (1, 0), (0, 2)],
+        [(2, 1), (0, 2), (1, 0), (1, 1)]
+    ]
+    for _ in range(0, 10):
+        for scenario in scenarios_to_check:
+            # Initialize empty board
+            tic_tac_toe.board = tic_tac_toe.emptyBoard()
+            # simulate the scenario
+            tic_tac_toe.updateBoard(scenario[0][0], scenario[0][1], tic_tac_toe.PLAYER_0)
+            tic_tac_toe.updateBoard(scenario[1][0], scenario[1][1], tic_tac_toe.PLAYER_1)
+            tic_tac_toe.updateBoard(scenario[2][0], scenario[2][1], tic_tac_toe.PLAYER_0)
+            # let the bot move once
+            move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1)
+            assert move != (1, 1)
+            assert (move[0] + move[1]) % 2 == 0
+            tic_tac_toe.updateBoard(move[0], move[1], tic_tac_toe.PLAYER_1)
+            # check that the bot successfully avoided the trap
+            assert tic_tac_toe.board[scenario[3][0]][scenario[3][1]] != tic_tac_toe.PLAYER_1
+            tic_tac_toe.move_history = []
