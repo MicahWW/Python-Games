@@ -176,7 +176,7 @@ def test_bot_takes_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
     :param tic_tac_toe: the TicTacToe object to be used in the test
     """
     # Scenarios to be checked
-    win_options = [
+    WIN_OPTIONS = [
         [(0, 0), (0, 1), (0, 2)],
         [(1, 0), (1, 1), (1, 2)],
         [(2, 0), (2, 1), (2, 2)],
@@ -188,7 +188,7 @@ def test_bot_takes_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
     ]
 
     # For each scenario, reset board and test
-    for scenario in win_options:
+    for scenario in WIN_OPTIONS:
         tic_tac_toe.board = [
             [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
             [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
@@ -201,6 +201,29 @@ def test_bot_takes_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
         tic_tac_toe.updateBoard(bot_move[0], bot_move[1], tic_tac_toe.PLAYER_1)
         assert tic_tac_toe.board[scenario[2][0]][scenario[2][1]] == tic_tac_toe.PLAYER_1
 
+    # Give the bot some more complex scenarios -- block opponent or win? (Should choose win)
+    # Check a scenario involving rows
+    tic_tac_toe.board = [
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_0, tic_tac_toe.BLANK_POS],
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+        [tic_tac_toe.PLAYER_1, tic_tac_toe.PLAYER_1, tic_tac_toe.BLANK_POS]
+    ]
+    bot_move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1)
+    tic_tac_toe.updateBoard(bot_move[0], bot_move[1], tic_tac_toe.PLAYER_1)
+    tic_tac_toe.checkBoard()
+    assert tic_tac_toe.game_state == tic_tac_toe.PLAYER_1_WINNER
+
+    # Check a scenario involving columns
+    tic_tac_toe.board = [
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
+        [tic_tac_toe.PLAYER_0, tic_tac_toe.BLANK_POS, tic_tac_toe.PLAYER_1],
+        [tic_tac_toe.BLANK_POS, tic_tac_toe.PLAYER_0, tic_tac_toe.PLAYER_1]
+    ]
+    bot_move = tic_tac_toe.botMove(tic_tac_toe.PLAYER_1)
+    tic_tac_toe.updateBoard(bot_move[0], bot_move[1], tic_tac_toe.PLAYER_1)
+    tic_tac_toe.checkBoard()
+    assert tic_tac_toe.game_state == tic_tac_toe.PLAYER_1_WINNER
+
 
 def test_bot_blocks_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
     """Tests that the bot will block opponent wins when possible.
@@ -208,7 +231,7 @@ def test_bot_blocks_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
     :param tic_tac_toe: the TicTacToe object to be used in the test
     """
     # Scenarios to be checked
-    win_options = [
+    WIN_OPTIONS = [
         [(0, 0), (0, 1), (0, 2)],
         [(1, 0), (1, 1), (1, 2)],
         [(2, 0), (2, 1), (2, 2)],
@@ -220,7 +243,7 @@ def test_bot_blocks_wins(tic_tac_toe: TicTacToe.TicTacTerminal):
     ]
 
     # For each scenario, reset the board and test
-    for scenario in win_options:
+    for scenario in WIN_OPTIONS:
         tic_tac_toe.board = [
             [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
             [tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS, tic_tac_toe.BLANK_POS],
