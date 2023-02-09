@@ -205,7 +205,8 @@ class TicTacToe:
 			for i in option:
 				score_keeper[self.board[i[0]][i[1]]] += 1
 
-			# If there are two bot icons set to win and a blank space available, take the blank space to win the game
+			# If there are two bot icons set to win and a blank space available,
+			# take the blank space to win the game
 			if score_keeper[bot_icon] == 2 and score_keeper[self.BLANK_POS] == 1:
 				for i in option:
 					if self.board[i[0]][i[1]] == self.BLANK_POS:
@@ -240,7 +241,28 @@ class TicTacToe:
 
 		# Check for edge-cases (that happen on turn 3)
 		if bot_icon == self.PLAYER_1 and len(self.move_history) == 3:
-			# Check for first edge-case: see board [[X, , ], [ ,X, ], [ , ,O]]
+			# Check for Double-Middle edge case: see board [[ ,X, ], [X,O, ], [ , ,O]]
+			# If player 0 plays in board[0][0], they are guaranteed a win scenario.  Avoid this trap.
+			if ((opp_move_1 := self.move_history[0])[0] + opp_move_1[1]) % 2 == 1:
+				# In this scenario, both of the user's moves are odd...
+				if ((opp_move_2 := self.move_history[2])[0] + opp_move_2[1]) % 2 == 1:
+					# ... and do not share a row or column.
+					if (opp_move_1[0] != opp_move_2[0]) and (opp_move_1[1] != opp_move_2[1]):
+						# Avoid the middle, and a second space that is calculated with MATH!
+						space_to_avoid = (
+							3 - (opp_move_1[0] + opp_move_2[0]),
+							3 - (opp_move_1[1] + opp_move_2[1])
+						)
+						while not valid_move:
+							# choose a corner at random
+							row = random.choice((0, 2))
+							col = random.choice((0, 2))
+							valid_move = self.checkValidMove(row, col)
+							# but avoid that corner that we calculated with MATH!
+							if (row, col) == space_to_avoid:
+								valid_move = False
+						return row, col
+			# Check for The Diagonal Dagger edge-case: see board [[X, , ], [ ,X, ], [ , ,O]]
 			# In this (or rotated) situation, bot should select a corner space
 			if self.board[1][1] == self.PLAYER_0:
 				# Check for scenario
@@ -252,8 +274,7 @@ class TicTacToe:
 						col = random.choice((0, 2))
 						valid_move = self.checkValidMove(row, col)
 					return row, col
-
-			# Check for second edge-case: see board [[ ,X, ], [ ,O, ], [X, , ]]
+			# Check for The Big L edge-case: see board [[ ,X, ], [ ,O, ], [X, , ]]
 			# In this scenario, bot loses if it selects (2, 1).  Avoid this (or rotated) scenarios.
 			if self.board[1][1] == bot_icon:
 				if self.board[0][1] != self.board[1][1] != self.board[2][1] != self.board[0][1]:
@@ -311,11 +332,12 @@ class TicTacToe:
 		return row, col
 
 	def resetGame(self) -> None:
-		"""Resets the board and game state, typically at the end of a game.
+		"""Resets the board, history and game state, typically at the end of a game.
 		Takes no arguments and makes no return.
 		"""
 
 		self.board = self.emptyBoard()
+		self.move_history = []
 		self.game_state = self.GAME_IN_PROGRESS
 
 
