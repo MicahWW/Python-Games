@@ -51,6 +51,11 @@
 
     </div>
 
+	<div>
+		<br />
+		<button type="button" onclick="resetGame()">Reset Game</button>
+	</div>
+
     <script defer>
         let baseURL = 'http://127.0.0.1:5000'
         let boardURL = baseURL + '/board'
@@ -58,6 +63,10 @@
         let checkMoveURL = baseURL + '/checkValidMove'
 		let updateBoardURL = baseURL + '/updateBoard'
 		let botMoveURL = baseURL + '/botMove'
+		let resetGameURL = baseURL + '/resetGame'
+
+		let userID = -1
+		let botID = 1
 
         function displayBoard() {
             fetch(boardURL, {Method: 'GET'})
@@ -106,6 +115,7 @@
 				})
 		}
 
+		// called when a user clicks a spot on the board
 		function checkAndUpdate(row, col) {
 			fetch(checkMoveURL, {
 				method: 'POST',
@@ -118,28 +128,43 @@
 				.then((data) => {
 					// If a valid move request to update the board
 					if (data.valid == true) {
-						updateBoard(row, col, -1);
-						// bot move
-						fetch(botMoveURL, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json'
-							},
-							body: JSON.stringify({ 'player': 1 })
-						})
-							.then((response) => response.json())
-							.then((data) => {
-								if (data.valid == true) {
-									updateBoard(data.row, data.col, 1);
-								} else {
-									console.log('Data was not valid')
-								}
-							})
+						updateBoard(row, col, userID);
+						processBotMove()
 					} else {
 						console.log('Data was not valid')
 					}
 				})
-        }
+		}
+
+		function processBotMove() {
+			fetch(botMoveURL, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ 'player': botID })
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					if (data.valid == true) {
+						updateBoard(data.row, data.col, botID);
+					} else {
+						console.log('Data was not valid');
+					}
+				})
+		}
+
+		function resetGame() {
+			fetch(resetGameURL, { method: 'POST' })
+				.then((response) => response.json())
+				.then((data) => {
+					updateScreenBoard(data)
+				})
+		}
+
+		// functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 		document.getElementById('pos_zero').onclick = function () {
 			checkAndUpdate(0, 0);

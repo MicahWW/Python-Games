@@ -57,5 +57,11 @@ def botMove_route():
 	print(f"botmove: {row}\t{col}")
 	return {"valid": True, "row": row, "col": col}
 
+@app.route("/resetGame", methods=["POST"])
+def resetGame_route():
+	game.resetGame()
+	return json.dumps(game.board)
+
+
 if __name__ == "__main__":
 	app.run()
