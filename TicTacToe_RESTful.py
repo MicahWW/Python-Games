@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-game = TicTacToe.TicTacTerminal()
+game = TicTacToe.TicTacToe()
 
 @app.route("/gameName", methods=["GET"])
 def gameName_route():
@@ -13,7 +13,6 @@ def gameName_route():
 
 @app.route("/board", methods=["GET"])
 def currentBoard_route():
-	game.displayBoard()
 	return json.dumps(game.board)
 
 @app.route("/checkValidMove", methods=["POST"])
@@ -42,7 +41,8 @@ def updateBoard_route():
 		print(f"query:\t{query}")
 		return {"updated": False}
 	game.updateBoard(row, col, player)
-	return {"updated": True}
+	game.checkBoard()
+	return {"updated": True, "game_state": game.game_state}
 
 @app.route("/botMove", methods=["POST"])
 def botMove_route():
@@ -54,13 +54,17 @@ def botMove_route():
 		print(f"query:\t{query}")
 		return {"valid: False"}
 	row, col = game.botMove(player)
-	print(f"botmove: {row}\t{col}")
 	return {"valid": True, "row": row, "col": col}
 
 @app.route("/resetGame", methods=["POST"])
 def resetGame_route():
-	game.resetGame()
+	global game
+	game = TicTacToe.TicTacToe()
 	return json.dumps(game.board)
+
+@app.route("/gameState", methods=["GET"])
+def gameState_route():
+	return {"game_state": game.game_state}
 
 
 if __name__ == "__main__":

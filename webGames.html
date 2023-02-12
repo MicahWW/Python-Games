@@ -52,26 +52,57 @@
     </div>
 
 	<div>
+		<pre style="display: inline" id="game_state"></pre>
+		<pre style="display: inline">: </pre>
+		<pre style="display: inline" id="current_player">who's turn placeholder</pre>
+	</div>
+
+	<div>
 		<br />
 		<button type="button" onclick="resetGame()">Reset Game</button>
 	</div>
 
     <script defer>
-        let baseURL = 'http://127.0.0.1:5000'
-        let boardURL = baseURL + '/board'
-        let gameNameURL = baseURL + '/gameName'
-        let checkMoveURL = baseURL + '/checkValidMove'
-		let updateBoardURL = baseURL + '/updateBoard'
-		let botMoveURL = baseURL + '/botMove'
-		let resetGameURL = baseURL + '/resetGame'
+		let baseURL = 'http://127.0.0.1:5000';
+		let boardURL = baseURL + '/board';
+		let gameNameURL = baseURL + '/gameName';
+		let checkMoveURL = baseURL + '/checkValidMove';
+		let updateBoardURL = baseURL + '/updateBoard';
+		let botMoveURL = baseURL + '/botMove';
+		let resetGameURL = baseURL + '/resetGame';
+		let gameStateURL = baseURL + '/gameState';
 
-		let userID = -1
-		let botID = 1
+		let userID = - 1;
+		let botID = 1;
+		let gameState = 0;
 
-        function displayBoard() {
-            fetch(boardURL, {Method: 'GET'})
-				.then((response) => response.json())
-				.then((data) => updateScreenBoard(data))
+		// global vars
+////////////////////////////////////////////////////////////////////////////////////////////////////
+		// functions
+
+		async function displayGame() {
+			const boardReq = await fetch(boardURL, { Method: 'GET' });
+			var data = await boardReq.json();
+			updateScreenBoard(data);
+
+			const stateReq = await fetch(gameStateURL, { Method: 'GET' });
+			var data = await stateReq.json();
+			gameState = data.game_state;
+			switch (gameState) {
+				case 0x10:
+					document.getElementById('game_state').innerHTML = 'Game in Progress';
+					break;
+				case 0x20:
+					document.getElementById('game_state').innerHTML = 'Player X won!!';
+					break;
+				case 0x30:
+					document.getElementById('game_state').innerHTML = 'Player O won!!';
+					break;
+				case 0x40:
+					document.getElementById('game_state').innerHTML = 'Game ended in a draw';
+					break;
+			}
+			console.log('In func ' + gameState);
         }
 
 		function updateScreenBoard(board) {
@@ -86,7 +117,7 @@
                     if (board[i][j] == -1) {
                         value = ' X ';
                     } else if (board[i][j] == 0) {
-                        value = ' E ';
+                        value = '   ';
                     } else {
                         value = ' O ';
                     }
@@ -95,48 +126,49 @@
             }
 		}
 
-		function updateBoard(row, col, player) {
-			fetch(updateBoardURL, {
+		async function updateBoard(row, col, player) {
+			const updateReq = await fetch(updateBoardURL, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({ 'row': row, 'col': col, 'player': player })
-			})
-				.then((response) => response.json())
-				.then((data) => {
-					// error check if it did get updated
-					if (data.updated == true) {
-						displayBoard()
-					} else {
-						// ERROR
-						console.log('Board didn\'t get updated')
-					}
-				})
+			});
+			var data = await updateReq.json();
+			if (data.updated == true) {
+				await displayGame();
+			} else {
+				// ERROR
+				console.log('Board didn\'t get updated')
+			}
 		}
 
 		// called when a user clicks a spot on the board
-		function checkAndUpdate(row, col) {
-			fetch(checkMoveURL, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ 'row': row, 'col': col })
-			})
-				.then((response) => response.json())
-				.then((data) => {
-					// If a valid move request to update the board
-					if (data.valid == true) {
-						updateBoard(row, col, userID);
-						processBotMove()
-					} else {
-						console.log('Data was not valid')
+		async function checkAndUpdate(row, col) {
+			if (gameState == 0x10) {
+				const checkReq = await fetch(checkMoveURL, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ 'row': row, 'col': col })
+				});
+				var data = await checkReq.json();
+				// If a valid move request to update the board
+				if (data.valid == true) {
+					await updateBoard(row, col, userID);
+					// checks if the game finished after the user moved
+					console.log(gameState);
+					if (gameState == 0x10) {
+						processBotMove();
 					}
-				})
+				} else {
+					console.log('Data was not valid');
+				}
+			}
 		}
 
-		function processBotMove() {
+		async function processBotMove() {
 			fetch(botMoveURL, {
 				method: 'POST',
 				headers: {
@@ -154,12 +186,13 @@
 				})
 		}
 
-		function resetGame() {
+		async function resetGame() {
 			fetch(resetGameURL, { method: 'POST' })
 				.then((response) => response.json())
 				.then((data) => {
 					updateScreenBoard(data)
 				})
+			await displayGame();
 		}
 
 		// functions
@@ -206,7 +239,7 @@
             .then((response) => response.json())
             .then((data) => document.getElementById('gameName').innerHTML = data)
 
-        displayBoard()
+        displayGame()
     </script>
 </body>
 </html>
