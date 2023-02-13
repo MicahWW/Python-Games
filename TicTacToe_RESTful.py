@@ -7,26 +7,37 @@ app = Flask(__name__)
 CORS(app)
 game = TicTacToe.TicTacToe()
 
+
+##################################################
+# game data
+
+
 @app.route("/gameName", methods=["GET"])
 def gameName_route():
 	return json.dumps(game.gameName())
+
 
 @app.route("/board", methods=["GET"])
 def currentBoard_route():
 	return json.dumps(game.board)
 
-@app.route("/checkValidMove", methods=["POST"])
-def checkValidMove_route():
-	query = request.get_json()
-	row = query.get("row", "error")
-	col = query.get("col", "error")
 
-	if row == "error" or col == "error":
-		print("Move was invalid, recieved:")
-		print(f"row:\t{row}\ncol:\t{col}")
-		print(f"query:\t{query}")
-		return {"valid": False}
-	return {"valid": game.checkValidMove(row, col)}
+@app.route("/gameState", methods=["GET"])
+def gameState_route():
+	return {"game_state": game.game_state}
+
+
+# game data
+##################################################
+# alter game
+
+
+@app.route("/resetGame", methods=["POST"])
+def resetGame_route():
+	global game
+	game = TicTacToe.TicTacToe()
+	return json.dumps(game.board)
+
 
 @app.route("/updateBoard", methods=["POST"])
 def updateBoard_route():
@@ -44,6 +55,26 @@ def updateBoard_route():
 	game.checkBoard()
 	return {"updated": True, "game_state": game.game_state}
 
+
+# alter game
+##################################################
+# generate output
+
+
+@app.route("/checkValidMove", methods=["POST"])
+def checkValidMove_route():
+	query = request.get_json()
+	row = query.get("row", "error")
+	col = query.get("col", "error")
+
+	if row == "error" or col == "error":
+		print("Move was invalid, recieved:")
+		print(f"row:\t{row}\ncol:\t{col}")
+		print(f"query:\t{query}")
+		return {"valid": False}
+	return {"valid": game.checkValidMove(row, col)}
+
+
 @app.route("/botMove", methods=["POST"])
 def botMove_route():
 	query = request.get_json()
@@ -56,16 +87,10 @@ def botMove_route():
 	row, col = game.botMove(player)
 	return {"valid": True, "row": row, "col": col}
 
-@app.route("/resetGame", methods=["POST"])
-def resetGame_route():
-	global game
-	game = TicTacToe.TicTacToe()
-	return json.dumps(game.board)
 
-@app.route("/gameState", methods=["GET"])
-def gameState_route():
-	return {"game_state": game.game_state}
-
+# generate output
+##################################################
+# start app
 
 if __name__ == "__main__":
 	app.run()
